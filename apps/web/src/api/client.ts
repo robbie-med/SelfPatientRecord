@@ -121,6 +121,26 @@ export interface Lab {
   created_at: string;
 }
 
+export interface LabExplainerCategory {
+  label: string;
+  range: string;
+  color: 'green' | 'yellow' | 'red';
+  meaning: string;
+}
+
+export interface LabExplainer {
+  id: string;
+  name: string;
+  aliases: string[];
+  what_it_measures: string;
+  unit: string;
+  normal_range: string;
+  categories: LabExplainerCategory[];
+  fasting_required: boolean;
+  why_ordered: string;
+  tips: string;
+}
+
 export interface Vital {
   id: string;
   patient_id: string;
@@ -268,6 +288,8 @@ export const getLabs = (testName?: string) =>
 export const createLab = (data: Partial<Lab>) => api.post<Lab>('/labs', data).then(r => r.data);
 export const getLabHistory = (testName: string) =>
   api.get<Lab[]>(`/labs/history/${encodeURIComponent(testName)}`).then(r => r.data);
+export const getLabExplainer = (testName: string) =>
+  api.get<LabExplainer>(`/labs/explain/${encodeURIComponent(testName)}`).then(r => r.data).catch(() => null);
 
 export const getVitals = (type?: string) =>
   api.get<Vital[]>('/vitals', { params: type ? { type } : undefined }).then(r => r.data);

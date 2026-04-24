@@ -1,0 +1,347 @@
+{
+  "tests": [
+    {
+      "id": "hba1c",
+      "aliases": ["a1c", "hba1c", "hemoglobin a1c", "glycated hemoglobin", "glycohemoglobin"],
+      "name": "Hemoglobin A1c (HbA1c)",
+      "what_it_measures": "Your average blood sugar level over the past 2–3 months. Glucose in your blood sticks to hemoglobin inside red blood cells; the A1c test measures how much has accumulated.",
+      "unit": "%",
+      "normal_range": "Below 5.7%",
+      "categories": [
+        { "label": "Normal", "range": "< 5.7%", "color": "green", "meaning": "Blood sugar regulation is normal." },
+        { "label": "Prediabetes", "range": "5.7 – 6.4%", "color": "yellow", "meaning": "Blood sugar is higher than normal. Lifestyle changes (diet, exercise) can often prevent progression to diabetes." },
+        { "label": "Diabetes", "range": "≥ 6.5%", "color": "red", "meaning": "Meets the diagnostic threshold for diabetes. Your doctor will discuss a management plan." }
+      ],
+      "fasting_required": false,
+      "why_ordered": "To screen for or monitor diabetes and prediabetes.",
+      "tips": "Unlike fasting glucose, A1c does not require fasting. It reflects long-term glucose control — a single high-sugar meal won't change it."
+    },
+    {
+      "id": "glucose_fasting",
+      "aliases": ["glucose", "blood glucose", "fasting glucose", "fasting blood sugar", "fbs", "plasma glucose"],
+      "name": "Blood Glucose (Fasting)",
+      "what_it_measures": "The amount of sugar (glucose) in your blood after an overnight fast of at least 8 hours.",
+      "unit": "mg/dL",
+      "normal_range": "70 – 99 mg/dL",
+      "categories": [
+        { "label": "Normal", "range": "70 – 99 mg/dL", "color": "green", "meaning": "Fasting blood sugar is normal." },
+        { "label": "Prediabetes", "range": "100 – 125 mg/dL", "color": "yellow", "meaning": "Impaired fasting glucose — a sign of prediabetes." },
+        { "label": "Diabetes", "range": "≥ 126 mg/dL (confirmed)", "color": "red", "meaning": "Two readings ≥ 126 mg/dL on separate days meet the criteria for diabetes." },
+        { "label": "Hypoglycemia", "range": "< 70 mg/dL", "color": "red", "meaning": "Low blood sugar. Can cause shakiness, dizziness, or confusion. Seek medical attention if symptomatic." }
+      ],
+      "fasting_required": true,
+      "why_ordered": "To screen for diabetes and prediabetes, or to monitor blood sugar in a person already diagnosed.",
+      "tips": "For accurate results, do not eat or drink anything except water for at least 8 hours before the test."
+    },
+    {
+      "id": "total_cholesterol",
+      "aliases": ["cholesterol", "total cholesterol", "chol", "tc"],
+      "name": "Total Cholesterol",
+      "what_it_measures": "The total amount of all cholesterol types in your blood, including LDL ('bad'), HDL ('good'), and VLDL. Cholesterol is a fatty substance your body needs for cell function and hormone production.",
+      "unit": "mg/dL",
+      "normal_range": "Below 200 mg/dL",
+      "categories": [
+        { "label": "Desirable", "range": "< 200 mg/dL", "color": "green", "meaning": "Low cardiovascular risk from total cholesterol." },
+        { "label": "Borderline High", "range": "200 – 239 mg/dL", "color": "yellow", "meaning": "Borderline high. Consider lifestyle changes and discuss with your doctor." },
+        { "label": "High", "range": "≥ 240 mg/dL", "color": "red", "meaning": "High total cholesterol increases cardiovascular risk. Treatment may be needed." }
+      ],
+      "fasting_required": false,
+      "why_ordered": "To assess cardiovascular risk. Usually part of a full lipid panel.",
+      "tips": "Total cholesterol alone is not the whole picture — the ratio of LDL to HDL and other risk factors matter just as much."
+    },
+    {
+      "id": "ldl",
+      "aliases": ["ldl", "ldl cholesterol", "ldl-c", "low density lipoprotein"],
+      "name": "LDL Cholesterol ('Bad' Cholesterol)",
+      "what_it_measures": "Low-density lipoprotein carries cholesterol from your liver to your cells. Too much LDL in the blood can build up in artery walls (plaque), raising the risk of heart attack and stroke.",
+      "unit": "mg/dL",
+      "normal_range": "Below 100 mg/dL (optimal)",
+      "categories": [
+        { "label": "Optimal", "range": "< 100 mg/dL", "color": "green", "meaning": "Ideal for most people." },
+        { "label": "Near Optimal", "range": "100 – 129 mg/dL", "color": "green", "meaning": "Near optimal/above optimal." },
+        { "label": "Borderline High", "range": "130 – 159 mg/dL", "color": "yellow", "meaning": "Borderline high — lifestyle changes recommended." },
+        { "label": "High", "range": "160 – 189 mg/dL", "color": "red", "meaning": "High — discuss treatment options with your doctor." },
+        { "label": "Very High", "range": "≥ 190 mg/dL", "color": "red", "meaning": "Very high risk. Medication (e.g., statins) is usually recommended." }
+      ],
+      "fasting_required": true,
+      "why_ordered": "To assess cardiovascular risk and guide treatment decisions for high cholesterol.",
+      "tips": "People with diabetes, heart disease, or very high cardiovascular risk may be advised to target LDL below 70 mg/dL."
+    },
+    {
+      "id": "hdl",
+      "aliases": ["hdl", "hdl cholesterol", "hdl-c", "high density lipoprotein"],
+      "name": "HDL Cholesterol ('Good' Cholesterol)",
+      "what_it_measures": "High-density lipoprotein carries cholesterol from your arteries back to your liver for disposal. Higher HDL is protective against heart disease.",
+      "unit": "mg/dL",
+      "normal_range": "≥ 60 mg/dL (protective)",
+      "categories": [
+        { "label": "Low (Risk Factor)", "range": "< 40 mg/dL (men) / < 50 mg/dL (women)", "color": "red", "meaning": "Low HDL is an independent risk factor for heart disease." },
+        { "label": "Acceptable", "range": "40 – 59 mg/dL", "color": "yellow", "meaning": "Acceptable, but higher is better." },
+        { "label": "Protective", "range": "≥ 60 mg/dL", "color": "green", "meaning": "High HDL is protective against heart disease." }
+      ],
+      "fasting_required": false,
+      "why_ordered": "As part of a lipid panel to assess cardiovascular risk.",
+      "tips": "Regular aerobic exercise and avoiding smoking are the best ways to raise HDL naturally."
+    },
+    {
+      "id": "triglycerides",
+      "aliases": ["triglycerides", "trig", "trigs", "triglyceride"],
+      "name": "Triglycerides",
+      "what_it_measures": "Fats (lipids) in your blood. Your body converts excess calories — especially from refined carbohydrates, sugar, and alcohol — into triglycerides and stores them in fat cells.",
+      "unit": "mg/dL",
+      "normal_range": "Below 150 mg/dL",
+      "categories": [
+        { "label": "Normal", "range": "< 150 mg/dL", "color": "green", "meaning": "Normal fasting triglyceride level." },
+        { "label": "Borderline High", "range": "150 – 199 mg/dL", "color": "yellow", "meaning": "Borderline high — diet modification recommended." },
+        { "label": "High", "range": "200 – 499 mg/dL", "color": "red", "meaning": "High triglycerides increase cardiovascular risk." },
+        { "label": "Very High", "range": "≥ 500 mg/dL", "color": "red", "meaning": "Very high — significant risk of pancreatitis. Medical treatment needed." }
+      ],
+      "fasting_required": true,
+      "why_ordered": "As part of a lipid panel to assess cardiovascular and metabolic risk.",
+      "tips": "Triglycerides are strongly affected by diet. Avoid alcohol and sugary foods for 24 hours before the test for the most accurate reading."
+    },
+    {
+      "id": "creatinine",
+      "aliases": ["creatinine", "serum creatinine", "cr", "cre"],
+      "name": "Creatinine",
+      "what_it_measures": "A waste product produced by muscle metabolism that is filtered out of the blood by the kidneys. High creatinine suggests the kidneys are not filtering efficiently.",
+      "unit": "mg/dL",
+      "normal_range": "0.7 – 1.2 mg/dL (men) / 0.5 – 1.0 mg/dL (women)",
+      "categories": [
+        { "label": "Normal", "range": "0.7–1.2 (men), 0.5–1.0 (women)", "color": "green", "meaning": "Kidneys are filtering waste normally." },
+        { "label": "Elevated", "range": "Above normal range", "color": "red", "meaning": "May indicate reduced kidney function. Should be evaluated alongside eGFR." }
+      ],
+      "fasting_required": false,
+      "why_ordered": "To assess kidney function, often checked alongside eGFR. Also monitored in patients taking certain medications (NSAIDs, some antibiotics, ACE inhibitors).",
+      "tips": "A large meal of cooked meat before the test can temporarily raise creatinine. Creatinine should always be interpreted together with eGFR."
+    },
+    {
+      "id": "egfr",
+      "aliases": ["egfr", "gfr", "estimated gfr", "estimated glomerular filtration rate", "glomerular filtration"],
+      "name": "eGFR (Kidney Filtration Rate)",
+      "what_it_measures": "Estimated Glomerular Filtration Rate — an estimate of how many milliliters of blood your kidneys filter per minute. Calculated from creatinine, age, and sex.",
+      "unit": "mL/min/1.73m²",
+      "normal_range": "≥ 60 mL/min/1.73m²",
+      "categories": [
+        { "label": "Normal to Mildly Decreased", "range": "≥ 60", "color": "green", "meaning": "Kidney function is normal or only mildly affected (depending on other signs)." },
+        { "label": "Moderately Decreased", "range": "30 – 59", "color": "yellow", "meaning": "Stage 3 CKD. Monitor closely and address risk factors (BP, diabetes, diet)." },
+        { "label": "Severely Decreased", "range": "15 – 29", "color": "red", "meaning": "Stage 4 CKD. Prepare for potential kidney replacement therapy." },
+        { "label": "Kidney Failure", "range": "< 15", "color": "red", "meaning": "Stage 5 CKD / kidney failure. Dialysis or transplant likely needed." }
+      ],
+      "fasting_required": false,
+      "why_ordered": "To monitor chronic kidney disease, screen for kidney damage in diabetes or hypertension, or assess risk before starting certain medications.",
+      "tips": "A single low eGFR should be confirmed with a repeat test. Many labs now report eGFR for people of all racial backgrounds using a race-free equation (CKD-EPI 2021)."
+    },
+    {
+      "id": "tsh",
+      "aliases": ["tsh", "thyroid stimulating hormone", "thyroid function", "thyroid"],
+      "name": "TSH (Thyroid Stimulating Hormone)",
+      "what_it_measures": "TSH is produced by your pituitary gland and tells the thyroid how much hormone to make. A high TSH means your thyroid is underactive (hypothyroid); a low TSH means it's overactive (hyperthyroid).",
+      "unit": "mIU/L",
+      "normal_range": "0.4 – 4.0 mIU/L",
+      "categories": [
+        { "label": "Normal", "range": "0.4 – 4.0 mIU/L", "color": "green", "meaning": "Thyroid function is normal." },
+        { "label": "Low (possible hyperthyroidism)", "range": "< 0.4 mIU/L", "color": "red", "meaning": "TSH is suppressed. May indicate overactive thyroid. Symptoms: weight loss, rapid heartbeat, sweating, anxiety." },
+        { "label": "High (possible hypothyroidism)", "range": "> 4.0 mIU/L", "color": "yellow", "meaning": "TSH is elevated. May indicate underactive thyroid. Symptoms: fatigue, weight gain, cold intolerance, constipation." }
+      ],
+      "fasting_required": false,
+      "why_ordered": "To screen for thyroid disorders, diagnose hypothyroidism or hyperthyroidism, or monitor thyroid replacement therapy (levothyroxine).",
+      "tips": "TSH is the most sensitive single test for thyroid function. If abnormal, free T4 and sometimes T3 are checked next."
+    },
+    {
+      "id": "alt",
+      "aliases": ["alt", "alanine aminotransferase", "alanine transaminase", "sgpt"],
+      "name": "ALT (Liver Enzyme)",
+      "what_it_measures": "Alanine aminotransferase is an enzyme found mainly in the liver. When liver cells are damaged or inflamed, ALT leaks into the bloodstream, raising blood levels.",
+      "unit": "U/L",
+      "normal_range": "7 – 56 U/L (varies by lab)",
+      "categories": [
+        { "label": "Normal", "range": "7 – 56 U/L", "color": "green", "meaning": "No significant liver cell damage detected." },
+        { "label": "Mildly Elevated", "range": "56 – 200 U/L", "color": "yellow", "meaning": "Mild elevation — may indicate fatty liver, medication effect, alcohol use, or early liver disease." },
+        { "label": "Markedly Elevated", "range": "> 200 U/L", "color": "red", "meaning": "Significant liver injury — hepatitis, drug toxicity, or other causes. Follow-up evaluation needed." }
+      ],
+      "fasting_required": false,
+      "why_ordered": "To screen for liver disease, monitor liver health during medication use (statins, acetaminophen), or evaluate abnormal symptoms (jaundice, abdominal pain, fatigue).",
+      "tips": "ALT is more specific to the liver than AST. Strenuous exercise, certain supplements, and some medications can temporarily raise ALT."
+    },
+    {
+      "id": "ast",
+      "aliases": ["ast", "aspartate aminotransferase", "aspartate transaminase", "sgot"],
+      "name": "AST (Liver/Muscle Enzyme)",
+      "what_it_measures": "Aspartate aminotransferase is found in the liver, heart, and muscles. Elevated AST can result from liver, heart, or muscle damage.",
+      "unit": "U/L",
+      "normal_range": "10 – 40 U/L (varies by lab)",
+      "categories": [
+        { "label": "Normal", "range": "10 – 40 U/L", "color": "green", "meaning": "No significant liver or muscle damage detected." },
+        { "label": "Elevated", "range": "> 40 U/L", "color": "yellow", "meaning": "Elevated AST. Evaluated alongside ALT to pinpoint whether the source is liver, heart, or muscle." }
+      ],
+      "fasting_required": false,
+      "why_ordered": "To assess liver function, usually alongside ALT. The AST:ALT ratio helps distinguish alcoholic liver disease from other causes.",
+      "tips": "AST rises after intense exercise and in heart attacks, so it is less specific to the liver than ALT."
+    },
+    {
+      "id": "wbc",
+      "aliases": ["wbc", "white blood cell", "white blood cells", "white blood count", "leukocytes"],
+      "name": "WBC (White Blood Cell Count)",
+      "what_it_measures": "The number of white blood cells per microliter of blood. White blood cells are your immune system's defenders — they fight infections, viruses, and other invaders.",
+      "unit": "K/µL (×10³ cells/µL)",
+      "normal_range": "4.5 – 11.0 K/µL",
+      "categories": [
+        { "label": "Normal", "range": "4.5 – 11.0 K/µL", "color": "green", "meaning": "Immune cell count is normal." },
+        { "label": "Low (Leukopenia)", "range": "< 4.5 K/µL", "color": "yellow", "meaning": "Fewer white blood cells than normal. May indicate viral infection, bone marrow problem, or medication effect." },
+        { "label": "High (Leukocytosis)", "range": "> 11.0 K/µL", "color": "red", "meaning": "Elevated white cells — often from infection, inflammation, or stress. Extremely high counts may suggest a blood disorder." }
+      ],
+      "fasting_required": false,
+      "why_ordered": "Part of the Complete Blood Count (CBC). Checked to detect infection, inflammation, immune disorders, or monitor chemotherapy effects.",
+      "tips": "A single abnormal WBC value is often not concerning on its own. Trends over time and the differential (breakdown of WBC subtypes) provide more information."
+    },
+    {
+      "id": "hemoglobin",
+      "aliases": ["hemoglobin", "hgb", "hb", "haemoglobin"],
+      "name": "Hemoglobin",
+      "what_it_measures": "The protein inside red blood cells that carries oxygen from your lungs to the rest of your body. Low hemoglobin means your blood is carrying less oxygen than normal (anemia).",
+      "unit": "g/dL",
+      "normal_range": "13.5–17.5 g/dL (men) / 12.0–15.5 g/dL (women)",
+      "categories": [
+        { "label": "Normal", "range": "13.5–17.5 (men), 12.0–15.5 (women)", "color": "green", "meaning": "Normal oxygen-carrying capacity." },
+        { "label": "Mild Anemia", "range": "10.0–12.0 g/dL", "color": "yellow", "meaning": "Mild anemia — may cause fatigue or shortness of breath with exertion." },
+        { "label": "Moderate Anemia", "range": "8.0–9.9 g/dL", "color": "red", "meaning": "Moderate anemia — symptoms likely. Investigation into cause needed." },
+        { "label": "Severe Anemia", "range": "< 8.0 g/dL", "color": "red", "meaning": "Severe anemia — may require treatment (iron, B12, or other therapy, or transfusion in some cases)." }
+      ],
+      "fasting_required": false,
+      "why_ordered": "Part of CBC. Checked to detect or monitor anemia, blood loss, nutritional deficiencies, or chronic disease.",
+      "tips": "Hemoglobin is affected by altitude, hydration status, and conditions like iron or B12 deficiency."
+    },
+    {
+      "id": "platelets",
+      "aliases": ["platelets", "plt", "platelet count", "thrombocytes"],
+      "name": "Platelets",
+      "what_it_measures": "Tiny blood cells that clump together to form clots and stop bleeding. Too few platelets can lead to excessive bleeding; too many can raise clot risk.",
+      "unit": "K/µL",
+      "normal_range": "150 – 400 K/µL",
+      "categories": [
+        { "label": "Normal", "range": "150 – 400 K/µL", "color": "green", "meaning": "Normal clotting capacity." },
+        { "label": "Low (Thrombocytopenia)", "range": "< 150 K/µL", "color": "yellow", "meaning": "Low platelets — may increase bleeding risk. Common causes: viral illness, medication, autoimmune conditions." },
+        { "label": "Very Low", "range": "< 50 K/µL", "color": "red", "meaning": "Significantly increased bleeding risk. Seek medical evaluation." },
+        { "label": "High (Thrombocytosis)", "range": "> 400 K/µL", "color": "yellow", "meaning": "High platelets — usually reactive to infection or inflammation, but can occasionally be a primary bone marrow disorder." }
+      ],
+      "fasting_required": false,
+      "why_ordered": "Part of CBC. Checked to evaluate bleeding disorders, monitor blood thinners, or assess bone marrow function.",
+      "tips": "Platelets tend to be naturally lower in some people without any health consequence. A single mildly low result often warrants repeat testing before further work-up."
+    },
+    {
+      "id": "sodium",
+      "aliases": ["sodium", "na", "serum sodium"],
+      "name": "Sodium (Na)",
+      "what_it_measures": "An electrolyte that controls fluid balance, blood pressure, and nerve and muscle signaling. Sodium levels reflect how well your body manages water.",
+      "unit": "mEq/L",
+      "normal_range": "135 – 145 mEq/L",
+      "categories": [
+        { "label": "Normal", "range": "135 – 145 mEq/L", "color": "green", "meaning": "Sodium is in balance." },
+        { "label": "Low (Hyponatremia)", "range": "< 135 mEq/L", "color": "yellow", "meaning": "Low sodium — can cause nausea, headache, confusion, and in severe cases, seizures." },
+        { "label": "High (Hypernatremia)", "range": "> 145 mEq/L", "color": "red", "meaning": "High sodium — usually from dehydration. Causes thirst, confusion, and in severe cases, brain injury." }
+      ],
+      "fasting_required": false,
+      "why_ordered": "Part of a Basic or Comprehensive Metabolic Panel. Evaluated with potassium, creatinine, and CO2 to assess overall electrolyte balance.",
+      "tips": "Sodium results are strongly affected by hydration. Drink normally before the test unless instructed otherwise."
+    },
+    {
+      "id": "potassium",
+      "aliases": ["potassium", "k", "serum potassium", "k+"],
+      "name": "Potassium (K)",
+      "what_it_measures": "An electrolyte critical for heart rhythm, muscle contraction, and nerve function. Both too high and too low potassium can cause dangerous heart arrhythmias.",
+      "unit": "mEq/L",
+      "normal_range": "3.5 – 5.0 mEq/L",
+      "categories": [
+        { "label": "Normal", "range": "3.5 – 5.0 mEq/L", "color": "green", "meaning": "Potassium is in balance." },
+        { "label": "Low (Hypokalemia)", "range": "< 3.5 mEq/L", "color": "yellow", "meaning": "Low potassium — may cause muscle cramps, weakness, constipation, and heart rhythm problems." },
+        { "label": "High (Hyperkalemia)", "range": "> 5.0 mEq/L", "color": "red", "meaning": "High potassium — can cause dangerous heart rhythm problems. Common in kidney disease or with ACE inhibitors/ARBs." }
+      ],
+      "fasting_required": false,
+      "why_ordered": "Part of a Metabolic Panel. Monitored closely in patients with kidney disease, heart disease, or on diuretics, ACE inhibitors, or ARBs.",
+      "tips": "Hemolysis (broken red blood cells in the sample from rough handling) can falsely raise potassium. A repeat test may be ordered if the value is unexpectedly high."
+    },
+    {
+      "id": "vitamin_d",
+      "aliases": ["vitamin d", "25-oh vitamin d", "25-hydroxyvitamin d", "vit d", "vitamin d3"],
+      "name": "Vitamin D (25-OH)",
+      "what_it_measures": "The storage form of vitamin D in your body. Vitamin D is essential for bone health, immune function, and many other processes. Most people get it from sunlight and food.",
+      "unit": "ng/mL",
+      "normal_range": "30 – 100 ng/mL",
+      "categories": [
+        { "label": "Sufficient", "range": "≥ 30 ng/mL", "color": "green", "meaning": "Adequate vitamin D status for bone health." },
+        { "label": "Insufficient", "range": "20 – 29 ng/mL", "color": "yellow", "meaning": "Some authorities consider this insufficient. Supplementation may be recommended." },
+        { "label": "Deficient", "range": "< 20 ng/mL", "color": "red", "meaning": "Vitamin D deficiency. Associated with bone loss (rickets/osteomalacia), muscle weakness, and immune impairment." }
+      ],
+      "fasting_required": false,
+      "why_ordered": "To screen for or monitor vitamin D deficiency, especially in people with limited sun exposure, dark skin, obesity, or malabsorption conditions.",
+      "tips": "Vitamin D status varies widely by season, geography, and skin tone. Testing is most meaningful when interpreted alongside symptoms and risk factors."
+    },
+    {
+      "id": "b12",
+      "aliases": ["vitamin b12", "b12", "cobalamin", "cyanocobalamin", "serum b12"],
+      "name": "Vitamin B12",
+      "what_it_measures": "Vitamin B12 is essential for making red blood cells, nerve function, and DNA synthesis. Deficiency is common in vegans, older adults, and people taking metformin or acid-reducing medications.",
+      "unit": "pg/mL",
+      "normal_range": "200 – 900 pg/mL",
+      "categories": [
+        { "label": "Normal", "range": "200 – 900 pg/mL", "color": "green", "meaning": "Adequate B12 for cell and nerve function." },
+        { "label": "Low-Normal (Gray Zone)", "range": "200 – 300 pg/mL", "color": "yellow", "meaning": "In this range, some people have functional B12 deficiency. MMA and homocysteine levels can clarify." },
+        { "label": "Deficient", "range": "< 200 pg/mL", "color": "red", "meaning": "B12 deficiency — can cause megaloblastic anemia, fatigue, tingling in hands/feet, memory problems, and depression." }
+      ],
+      "fasting_required": false,
+      "why_ordered": "To investigate anemia, fatigue, neuropathy, or cognitive symptoms. Routinely checked in vegans and vegetarians and in patients on metformin or proton pump inhibitors.",
+      "tips": "B12 deficiency develops slowly — symptoms may not appear until stores are depleted over years. Supplementation is highly effective."
+    },
+    {
+      "id": "ferritin",
+      "aliases": ["ferritin", "serum ferritin"],
+      "name": "Ferritin (Iron Stores)",
+      "what_it_measures": "Ferritin is a protein that stores iron. Measuring ferritin is the best single test to assess total body iron stores — it drops before hemoglobin falls in iron deficiency.",
+      "unit": "ng/mL",
+      "normal_range": "30 – 300 ng/mL (men) / 15 – 200 ng/mL (women)",
+      "categories": [
+        { "label": "Normal", "range": "30–300 (men), 15–200 (women)", "color": "green", "meaning": "Iron stores are adequate." },
+        { "label": "Low (Iron Depletion)", "range": "12 – 30 ng/mL", "color": "yellow", "meaning": "Early iron depletion — stores are reduced but anemia hasn't developed yet." },
+        { "label": "Very Low (Iron Deficiency)", "range": "< 12 ng/mL", "color": "red", "meaning": "Iron deficiency — likely contributing to anemia or symptoms of fatigue, hair loss, or poor concentration." },
+        { "label": "Elevated", "range": "> 300 ng/mL", "color": "yellow", "meaning": "Ferritin is also an inflammation marker — it rises with infection, liver disease, or in hemochromatosis. Context matters." }
+      ],
+      "fasting_required": false,
+      "why_ordered": "To diagnose iron deficiency anemia, evaluate unexplained fatigue or hair loss, or screen for hemochromatosis (iron overload).",
+      "tips": "Ferritin rises during illness even when iron is actually low, which can mask iron deficiency. Test when you're feeling well if possible."
+    },
+    {
+      "id": "psa",
+      "aliases": ["psa", "prostate specific antigen", "prostate-specific antigen"],
+      "name": "PSA (Prostate-Specific Antigen)",
+      "what_it_measures": "PSA is a protein made by both normal and cancerous prostate cells. Elevated PSA can indicate prostate cancer, but also benign prostate enlargement (BPH), prostatitis, or other non-cancerous conditions.",
+      "unit": "ng/mL",
+      "normal_range": "Generally < 4.0 ng/mL (age-dependent)",
+      "categories": [
+        { "label": "Low Risk", "range": "< 4.0 ng/mL", "color": "green", "meaning": "Low PSA. Cancer not excluded but risk is lower." },
+        { "label": "Intermediate", "range": "4.0 – 10.0 ng/mL", "color": "yellow", "meaning": "'Gray zone' — about 25% chance of prostate cancer. Biopsy may be considered." },
+        { "label": "Elevated", "range": "> 10.0 ng/mL", "color": "red", "meaning": "Greater than 50% chance of prostate cancer. Further evaluation is strongly recommended." }
+      ],
+      "fasting_required": false,
+      "why_ordered": "To screen for prostate cancer in men (typically 50–70) or to monitor known prostate cancer. Screening is a shared decision — discuss risks and benefits with your doctor.",
+      "tips": "PSA can be elevated by ejaculation, prostate exam (DRE), cycling, and UTI. Avoid these for 48 hours before testing. PSA doubling time is more informative than a single result."
+    },
+    {
+      "id": "inr",
+      "aliases": ["inr", "pt/inr", "prothrombin time", "pt", "international normalized ratio"],
+      "name": "INR / Prothrombin Time (PT)",
+      "what_it_measures": "The INR measures how long it takes for blood to clot. It is used to monitor warfarin (Coumadin) therapy. A higher INR means blood is taking longer to clot (more anticoagulated).",
+      "unit": "(ratio — no units)",
+      "normal_range": "0.9 – 1.1 (not on warfarin) / 2.0 – 3.0 (therapeutic on warfarin)",
+      "categories": [
+        { "label": "Normal (off anticoagulant)", "range": "0.9 – 1.1", "color": "green", "meaning": "Normal clotting function." },
+        { "label": "Therapeutic (on warfarin)", "range": "2.0 – 3.0", "color": "green", "meaning": "INR is in the therapeutic range for most conditions (AFib, DVT, PE)." },
+        { "label": "Sub-therapeutic", "range": "< 2.0 (on warfarin)", "color": "yellow", "meaning": "Not anticoagulated enough — clot risk is higher. Warfarin dose may need adjustment." },
+        { "label": "Supra-therapeutic", "range": "> 3.0 (on warfarin)", "color": "red", "meaning": "Over-anticoagulated — bleeding risk is higher. Dose adjustment needed; > 5.0 may require reversal." }
+      ],
+      "fasting_required": false,
+      "why_ordered": "To monitor warfarin therapy and adjust dosing. INR frequency depends on stability — typically weekly to monthly once stable.",
+      "tips": "Vitamin K in food (leafy greens like spinach, kale, broccoli) counteracts warfarin. Eat a consistent diet rather than avoiding these foods entirely."
+    }
+  ]
+}

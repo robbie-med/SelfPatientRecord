@@ -411,6 +411,20 @@ app.get('/api/labs/history/:testName', async (c) => {
   }
 });
 
+app.get('/api/labs/explain/:testName', (c) => {
+  try {
+    const testName = decodeURIComponent(c.req.param('testName')).toLowerCase().trim();
+    const dataPath = path.resolve(__dirname, '../data/lab-explainers.json');
+    const { tests } = JSON.parse(readFileSync(dataPath, 'utf-8')) as { tests: Array<{ aliases: string[]; [k: string]: unknown }> };
+    const match = tests.find(t => t.aliases.some(a => testName.includes(a) || a.includes(testName)));
+    if (!match) return c.json({ error: 'No explainer found for this test.' }, 404);
+    return c.json(match);
+  } catch (e) {
+    console.error(e);
+    return c.json({ error: 'Internal server error' }, 500);
+  }
+});
+
 // ── Vitals ────────────────────────────────────────────────────────────────────
 app.get('/api/vitals', async (c) => {
   try {

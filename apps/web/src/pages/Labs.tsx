@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { getLabs, createLab, getLabHistory, type Lab } from '../api/client';
 import LabChart from '../components/LabChart';
+import LabExplainer from '../components/LabExplainer';
 import clsx from 'clsx';
 import { format, parseISO } from 'date-fns';
 
@@ -31,6 +32,7 @@ export default function Labs() {
   const { data: labs = [], isLoading } = useQuery({ queryKey: ['labs'], queryFn: () => getLabs() });
 
   const [selectedTest, setSelectedTest] = useState('');
+  const [showExplainer, setShowExplainer] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
   const [form, setForm] = useState({ test_name: '', value: '', unit: '', collection_date: '', panel: '', reference_range_low: '', reference_range_high: '' });
 
@@ -125,7 +127,7 @@ export default function Labs() {
           <label className="block text-sm font-medium text-gray-700 mb-1">{t('labs.selectTest')}</label>
           <select
             value={selectedTest}
-            onChange={e => setSelectedTest(e.target.value)}
+            onChange={e => { setSelectedTest(e.target.value); setShowExplainer(false); }}
             className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">— {t('labs.selectTest')} —</option>
@@ -133,6 +135,17 @@ export default function Labs() {
           </select>
         </div>
         {selectedTest && <LabChart data={chartData} testName={selectedTest} />}
+        {selectedTest && (
+          <div className="mt-3">
+            <button
+              onClick={() => setShowExplainer(v => !v)}
+              className="text-xs text-blue-600 hover:underline flex items-center gap-1"
+            >
+              {showExplainer ? '▲ Hide' : '▼ What does this test measure?'}
+            </button>
+            {showExplainer && <LabExplainer testName={selectedTest} />}
+          </div>
+        )}
       </div>
 
       {/* Table */}
