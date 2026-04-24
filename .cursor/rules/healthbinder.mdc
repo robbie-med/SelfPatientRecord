@@ -1,0 +1,36 @@
+---
+description: HealthBinder project rules — applied to all files
+globs: ["**/*.ts", "**/*.tsx", "**/*.json"]
+alwaysApply: true
+---
+
+# HealthBinder
+
+Local-first personal health record. One patient, one SQLite DB, runs locally. Not a medical device.
+
+## Hard rules
+
+- All DB access via Drizzle ORM — no raw SQL except in `apps/server/src/db/index.ts`
+- AI-extracted facts (`extracted_facts` table) must never be written to canonical tables (`conditions`, `medications`, `labs`, etc.) without `user_confirmed = true`
+- Single-tenant only — `getOrCreatePatient()` in `apps/server/src/index.ts` is the only patient access pattern
+- No new npm dependencies without justification
+- No comments explaining WHAT code does — only WHY if non-obvious
+
+## Stack
+
+- Backend: Hono + Drizzle + better-sqlite3 in `apps/server/`
+- Frontend: React 18 + Vite + TailwindCSS + React Query in `apps/web/`
+- Shared types live in `apps/web/src/api/client.ts` (interfaces) and `apps/server/src/db/schema.ts` (Drizzle tables)
+
+## Patterns to follow
+
+- New pages: `apps/web/src/pages/` → route in `App.tsx` → nav in `Layout.tsx` → i18n in `en.ts` + `ko.ts`
+- New routes: add to `apps/server/src/index.ts` + typed function in `apps/web/src/api/client.ts`
+- Country packs: `packages/country-packs/<code>/preventive-care.json` — seeder auto-picks up on restart
+- Module triggers: `packages/clinical-rules/src/module-triggers.json`
+
+## Medical content
+
+Always include `source_url` and `version_date`. Use patient-facing language. Never state a diagnosis.
+
+See `CLAUDE.md` and `CONTRIBUTING.md` for full details.
