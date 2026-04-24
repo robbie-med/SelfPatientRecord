@@ -7,6 +7,7 @@ const NAV_ITEMS = [
   { to: '/inbox', icon: '📥', key: 'nav.inbox' },
   { to: '/timeline', icon: '📅', key: 'nav.timeline' },
   { to: '/labs', icon: '🧪', key: 'nav.labs' },
+  { to: '/imaging', icon: '🩻', key: 'nav.imaging' },
   { to: '/meds', icon: '💊', key: 'nav.meds' },
   { to: '/prevention', icon: '🛡️', key: 'nav.prevention' },
   { to: '/ask', icon: '💬', key: 'nav.ask' },

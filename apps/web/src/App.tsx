@@ -5,6 +5,7 @@ import Timeline from './pages/Timeline';
 import Labs from './pages/Labs';
 import Meds from './pages/Meds';
 import Prevention from './pages/Prevention';
+import Imaging from './pages/Imaging';
 import AskMyRecord from './pages/AskMyRecord';
 import Settings from './pages/Settings';
 
@@ -18,6 +19,7 @@ export default function App() {
         <Route path="labs" element={<Labs />} />
         <Route path="meds" element={<Meds />} />
         <Route path="prevention" element={<Prevention />} />
+        <Route path="imaging" element={<Imaging />} />
         <Route path="ask" element={<AskMyRecord />} />
         <Route path="settings" element={<Settings />} />
       </Route>

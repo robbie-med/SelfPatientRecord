@@ -536,6 +536,20 @@ app.post('/api/encounters', async (c) => {
 });
 
 // ── Imaging ───────────────────────────────────────────────────────────────────
+app.get('/api/imaging/explain/:term', (c) => {
+  try {
+    const term = decodeURIComponent(c.req.param('term')).toLowerCase().trim();
+    const dataPath = path.resolve(__dirname, '../data/imaging-explainers.json');
+    const { terms } = JSON.parse(readFileSync(dataPath, 'utf-8')) as { terms: Array<{ aliases: string[]; [k: string]: unknown }> };
+    const match = terms.find(t => t.aliases.some(a => term.includes(a) || a.includes(term)));
+    if (!match) return c.json({ error: 'No explainer found.' }, 404);
+    return c.json(match);
+  } catch (e) {
+    console.error(e);
+    return c.json({ error: 'Internal server error' }, 500);
+  }
+});
+
 app.get('/api/imaging', async (c) => {
   try {
     const patient = await getOrCreatePatient();

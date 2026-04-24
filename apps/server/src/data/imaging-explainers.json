@@ -1,0 +1,213 @@
+{
+  "terms": [
+    {
+      "id": "atelectasis",
+      "aliases": ["atelectasis", "atelectatic", "subsegmental atelectasis", "basilar atelectasis", "plate-like atelectasis"],
+      "name": "Atelectasis",
+      "plain_english": "A section of lung tissue that has collapsed or is not fully inflated. Small areas (subsegmental) are extremely common, especially after surgery, bed rest, or shallow breathing.",
+      "common_in": ["Chest X-ray", "CT chest"],
+      "severity": "low",
+      "reassurance": "Subsegmental or plate-like atelectasis is very common and usually resolves on its own with deep breathing and movement. It is not the same as a collapsed lung.",
+      "when_to_worry": "Large areas of atelectasis causing symptoms (shortness of breath, low oxygen) or that don't clear with treatment may need bronchoscopy or other intervention.",
+      "what_to_ask": "Is this causing any symptoms? Does it need treatment or just monitoring? Is it related to my recent surgery or illness?"
+    },
+    {
+      "id": "pleural_effusion",
+      "aliases": ["pleural effusion", "pleural fluid", "fluid in the chest", "hydrothorax", "bilateral pleural effusions"],
+      "name": "Pleural Effusion",
+      "plain_english": "Fluid that has collected in the space between the lung and the chest wall (the pleural space). Normally only a tiny amount of fluid is there for lubrication. Extra fluid can compress the lung.",
+      "common_in": ["Chest X-ray", "CT chest", "Ultrasound"],
+      "severity": "moderate",
+      "reassurance": "Small effusions are often found incidentally and may be benign. Common causes include heart failure, infection, inflammation, or low protein levels.",
+      "when_to_worry": "Large effusions causing shortness of breath, or effusions that don't have a clear cause, may need drainage (thoracentesis) and testing of the fluid.",
+      "what_to_ask": "What is likely causing the fluid? How much is there? Does it need to be drained? What follow-up is needed?"
+    },
+    {
+      "id": "pulmonary_nodule",
+      "aliases": ["pulmonary nodule", "lung nodule", "nodule", "nodules", "lung mass", "pulmonary mass", "ground glass nodule", "subsolid nodule"],
+      "name": "Pulmonary Nodule",
+      "plain_english": "A small, round or oval spot in the lung seen on imaging. The vast majority — especially those smaller than 6mm — are benign (non-cancerous), caused by old infections, scarring, or lymph nodes.",
+      "common_in": ["CT chest", "Chest X-ray"],
+      "severity": "varies",
+      "reassurance": "Most lung nodules are benign. Radiologists use established guidelines (Fleischner Society) to determine follow-up based on size, shape, density, and your risk factors (smoking history).",
+      "when_to_worry": "Nodules larger than 6–8mm, growing nodules, or those with irregular edges in a high-risk patient warrant follow-up CT scans or PET scan. Very few require biopsy.",
+      "what_to_ask": "What size is it? What follow-up schedule is recommended? Does my smoking history change the recommendation? Has it changed since prior imaging?"
+    },
+    {
+      "id": "ground_glass_opacity",
+      "aliases": ["ground glass opacity", "ground-glass opacity", "ggo", "ground glass", "ground-glass"],
+      "name": "Ground-Glass Opacity (GGO)",
+      "plain_english": "A hazy, faint area in the lung on CT that looks like frosted glass — you can still see the blood vessels through it. It means the lung is partially filled with fluid, cells, or inflammation but not completely.",
+      "common_in": ["CT chest"],
+      "severity": "varies",
+      "reassurance": "GGOs have many causes: infection (including COVID-19), inflammation, mild pulmonary edema, or early lung cancer. Acute GGOs (from infection or fluid) often clear up completely. Persistent GGOs need follow-up.",
+      "when_to_worry": "A GGO that persists or grows on follow-up CT at 3–6 months warrants further evaluation, including possible PET scan or biopsy.",
+      "what_to_ask": "Is this acute (new infection) or persistent? What follow-up scan is recommended? Is this related to my recent illness?"
+    },
+    {
+      "id": "consolidation",
+      "aliases": ["consolidation", "airspace consolidation", "airspace disease", "infiltrate", "opacity", "lobar consolidation"],
+      "name": "Consolidation / Infiltrate",
+      "plain_english": "An area of the lung where the normal air-filled spaces are replaced by fluid, pus, blood, or cells — making that part of the lung appear solid white on imaging. Pneumonia is the most common cause.",
+      "common_in": ["Chest X-ray", "CT chest"],
+      "severity": "moderate",
+      "reassurance": "Most consolidations from infection clear with antibiotics and resolve within 6–8 weeks. A follow-up chest X-ray is often recommended after treatment to confirm clearance.",
+      "when_to_worry": "Consolidation that doesn't clear after treatment, or that lacks infectious symptoms, may need bronchoscopy or biopsy to rule out other causes (cancer, lymphoma, organizing pneumonia).",
+      "what_to_ask": "Is this pneumonia? What antibiotic is recommended? When should I get a follow-up X-ray to confirm it's clearing?"
+    },
+    {
+      "id": "cardiomegaly",
+      "aliases": ["cardiomegaly", "enlarged heart", "cardiac enlargement", "increased cardiac silhouette"],
+      "name": "Cardiomegaly (Enlarged Heart)",
+      "plain_english": "The heart appears larger than normal on imaging. On a chest X-ray, this is measured by comparing the heart width to the chest width (cardiothoracic ratio). An enlarged heart is a sign that the heart is working harder than normal.",
+      "common_in": ["Chest X-ray", "CT chest", "Echocardiogram"],
+      "severity": "moderate",
+      "reassurance": "Cardiomegaly on a chest X-ray is a finding that needs further evaluation — it is not a diagnosis by itself. Common causes include heart failure, high blood pressure, valve disease, or athletic training.",
+      "when_to_worry": "Any new cardiomegaly should prompt an echocardiogram to assess heart function and structure. If combined with shortness of breath or leg swelling, seek evaluation promptly.",
+      "what_to_ask": "Has my heart been enlarged on previous imaging? Should I have an echocardiogram? Is this related to my blood pressure or other heart conditions?"
+    },
+    {
+      "id": "degenerative_disc_disease",
+      "aliases": ["degenerative disc disease", "ddd", "disc degeneration", "degenerative changes", "spondylosis", "disc space narrowing", "osteophytes", "bone spurs"],
+      "name": "Degenerative Disc Disease / Spondylosis",
+      "plain_english": "Age-related wear and tear on the spinal discs and vertebrae. The discs — which act as cushions between the bones — lose height and water content over time. Bone spurs (osteophytes) may form. This is extremely common and is considered a normal part of aging.",
+      "common_in": ["X-ray spine", "MRI spine", "CT spine"],
+      "severity": "low",
+      "reassurance": "Degenerative changes are found in the vast majority of adults over 40, even in people with no back pain. The imaging findings often do not correlate with symptoms — many people with severe-looking X-rays feel fine.",
+      "when_to_worry": "If there is associated nerve compression causing radiating pain, numbness, or weakness in arms or legs, further evaluation and treatment (physical therapy, injections, or surgery) may be needed.",
+      "what_to_ask": "Do these changes explain my symptoms? Do I need an MRI? Should I see a spine specialist or start physical therapy?"
+    },
+    {
+      "id": "herniated_disc",
+      "aliases": ["herniated disc", "disc herniation", "disc protrusion", "disc extrusion", "bulging disc", "disc bulge", "nucleus pulposus herniation"],
+      "name": "Herniated Disc",
+      "plain_english": "The soft, gel-like center (nucleus) of a spinal disc has pushed through a tear in its outer ring. This can press on nearby nerves, causing pain, numbness, or weakness that radiates down an arm (cervical) or leg (lumbar — often called 'sciatica').",
+      "common_in": ["MRI spine", "CT spine"],
+      "severity": "moderate",
+      "reassurance": "Most herniated discs improve on their own within 6–12 weeks with conservative treatment (physical therapy, anti-inflammatories, activity modification). Surgery is rarely needed.",
+      "when_to_worry": "Severe or worsening weakness, loss of bladder or bowel control, or pain that doesn't improve with conservative care are red-flag symptoms that need urgent evaluation.",
+      "what_to_ask": "Which nerve is being affected? What conservative treatments are recommended first? At what point should I consider surgery or injections?"
+    },
+    {
+      "id": "spinal_stenosis",
+      "aliases": ["spinal stenosis", "canal stenosis", "foraminal stenosis", "neural foraminal narrowing", "central stenosis", "lumbar stenosis", "cervical stenosis"],
+      "name": "Spinal Stenosis",
+      "plain_english": "Narrowing of the spinal canal or the openings where nerve roots exit the spine. This can compress the spinal cord or nerves. Most commonly develops in the lower back (lumbar) or neck (cervical) as a result of aging and arthritis.",
+      "common_in": ["MRI spine", "CT spine"],
+      "severity": "moderate",
+      "reassurance": "Many people have stenosis on imaging without symptoms. Mild stenosis often responds well to physical therapy and lifestyle changes.",
+      "when_to_worry": "Moderate to severe stenosis causing leg pain with walking (neurogenic claudication), balance problems, or weakness warrants specialist evaluation and may benefit from injections or surgery.",
+      "what_to_ask": "Is the stenosis mild, moderate, or severe? Is it causing my symptoms? What treatment options are available at my level of narrowing?"
+    },
+    {
+      "id": "cholelithiasis",
+      "aliases": ["cholelithiasis", "gallstones", "gallstone", "choledocholithiasis", "biliary stones", "biliary calculi"],
+      "name": "Gallstones (Cholelithiasis)",
+      "plain_english": "Hardened deposits (stones) that form in the gallbladder from bile cholesterol or bilirubin. Very common — about 10–15% of adults have them. Most gallstones cause no symptoms.",
+      "common_in": ["Ultrasound abdomen", "CT abdomen"],
+      "severity": "low",
+      "reassurance": "Silent gallstones (no symptoms) don't need treatment. The risk of developing symptoms is only about 1–2% per year. Many people live their whole lives with gallstones and never know.",
+      "when_to_worry": "Pain in the right upper abdomen or right shoulder after eating fatty foods, nausea, or fever with chills (cholangitis) warrants prompt evaluation. Recurrent attacks usually lead to laparoscopic cholecystectomy (gallbladder removal).",
+      "what_to_ask": "Are my symptoms related to the gallstones? Do I need surgery now or can I watch and wait? Should I change my diet?"
+    },
+    {
+      "id": "nephrolithiasis",
+      "aliases": ["nephrolithiasis", "kidney stones", "kidney stone", "renal calculi", "renal stone", "urolithiasis", "ureteral stone"],
+      "name": "Kidney Stones (Nephrolithiasis)",
+      "plain_english": "Hard mineral deposits that form inside the kidneys. They can stay in the kidney painlessly or travel down the ureter (the tube to the bladder), causing severe cramping pain (renal colic) in the back and side.",
+      "common_in": ["CT abdomen/pelvis", "Ultrasound kidney", "X-ray KUB"],
+      "severity": "moderate",
+      "reassurance": "Most small stones (< 5mm) pass on their own within days to weeks with hydration and pain control. Passing a stone is very painful but not dangerous in most cases.",
+      "when_to_worry": "Stones larger than 6–7mm, stones that don't pass, fever with a stone (sign of infection — medical emergency), or only one functioning kidney require urgent urological care.",
+      "what_to_ask": "What size is the stone? How likely is it to pass on its own? Do I need a procedure? What can I do to prevent future stones?"
+    },
+    {
+      "id": "hepatomegaly",
+      "aliases": ["hepatomegaly", "enlarged liver", "liver enlargement", "liver is enlarged"],
+      "name": "Hepatomegaly (Enlarged Liver)",
+      "plain_english": "The liver is larger than normal. This is a finding that signals the liver may be under stress — not a diagnosis in itself. Causes range from fatty liver (most common) to hepatitis, alcohol use, heart failure, or cancer.",
+      "common_in": ["Ultrasound abdomen", "CT abdomen"],
+      "severity": "moderate",
+      "reassurance": "Mild hepatomegaly in the context of known fatty liver disease is very common. It doesn't mean the liver is failing.",
+      "when_to_worry": "Hepatomegaly combined with abnormal liver enzymes (ALT, AST), jaundice, or a firm/nodular texture on exam warrants full workup including liver function tests and possibly biopsy.",
+      "what_to_ask": "What is the likely cause? Should I have liver blood tests? Is there evidence of cirrhosis or liver damage?"
+    },
+    {
+      "id": "fatty_liver",
+      "aliases": ["fatty liver", "hepatic steatosis", "steatosis", "fatty infiltration", "fatty change", "hepatic fat"],
+      "name": "Fatty Liver (Hepatic Steatosis)",
+      "plain_english": "Fat has accumulated inside liver cells. On ultrasound, the liver appears brighter than normal (echogenic). On CT, it appears darker. Fatty liver is the most common liver condition worldwide, closely linked to obesity, diabetes, and alcohol use.",
+      "common_in": ["Ultrasound abdomen", "CT abdomen", "MRI abdomen"],
+      "severity": "low",
+      "reassurance": "Mild to moderate fatty liver is often reversible with lifestyle changes — weight loss, reduced alcohol, better blood sugar control. It does not cause liver failure by itself.",
+      "when_to_worry": "When fatty liver progresses to NASH (non-alcoholic steatohepatitis) with inflammation and fibrosis, it can eventually lead to cirrhosis. Significant ALT elevation or a liver stiffness test result may indicate progression.",
+      "what_to_ask": "What grade of fatty liver do I have? Are my liver enzymes elevated? Should I have a fibroscan to check for fibrosis? What lifestyle changes will help most?"
+    },
+    {
+      "id": "simple_cyst",
+      "aliases": ["simple cyst", "cyst", "benign cyst", "hepatic cyst", "renal cyst", "ovarian cyst", "simple hepatic cyst", "simple renal cyst"],
+      "name": "Simple Cyst",
+      "plain_english": "A fluid-filled sac with thin walls and no internal structure. Simple cysts in the kidney, liver, or ovary are extremely common, especially with age. They are almost always benign and require no treatment.",
+      "common_in": ["Ultrasound", "CT", "MRI"],
+      "severity": "low",
+      "reassurance": "Simple cysts meeting strict imaging criteria (thin walls, no septations, no solid components) are benign and almost never become cancerous. Most don't need follow-up.",
+      "when_to_worry": "Cysts with thick walls, internal dividers (septations), solid areas, or irregular features are 'complex cysts' and require further evaluation (MRI, urology, or gynecology referral).",
+      "what_to_ask": "Does this cyst meet simple criteria, or is it complex? Does it need follow-up imaging or specialist review?"
+    },
+    {
+      "id": "lymphadenopathy",
+      "aliases": ["lymphadenopathy", "enlarged lymph nodes", "lymph node enlargement", "lymph nodes enlarged", "adenopathy", "mediastinal lymphadenopathy", "hilar lymphadenopathy"],
+      "name": "Lymphadenopathy (Enlarged Lymph Nodes)",
+      "plain_english": "Lymph nodes that are larger than normal. Lymph nodes are small immune system glands found throughout the body that filter harmful substances. They commonly enlarge in response to infection, inflammation, or — less commonly — cancer.",
+      "common_in": ["CT", "Ultrasound", "PET scan", "Chest X-ray"],
+      "severity": "varies",
+      "reassurance": "The most common cause of enlarged lymph nodes is infection (bacterial, viral, or dental). Nodes that shrink after an infection resolves are almost always reactive (benign).",
+      "when_to_worry": "Nodes larger than 1–1.5 cm, nodes that are hard, fixed, or growing, or nodes that persist beyond 4–6 weeks without a clear cause warrant further evaluation (blood tests, PET scan, or biopsy).",
+      "what_to_ask": "Are there any concerning features (size, location, firmness)? Is there a likely infectious cause? Should I have blood tests or follow-up imaging?"
+    },
+    {
+      "id": "ascites",
+      "aliases": ["ascites", "free fluid abdomen", "peritoneal fluid", "abdominal fluid", "intraperitoneal fluid"],
+      "name": "Ascites (Abdominal Fluid)",
+      "plain_english": "Fluid that has accumulated in the abdominal cavity (peritoneal space). Normally there is no free fluid here. Ascites is a significant finding that indicates an underlying medical condition.",
+      "common_in": ["Ultrasound abdomen", "CT abdomen"],
+      "severity": "high",
+      "reassurance": "Small amounts of fluid in women of reproductive age around ovulation can be normal. In other contexts, ascites signals a condition that needs evaluation.",
+      "when_to_worry": "Ascites is most commonly caused by cirrhosis (liver disease), heart failure, kidney disease, or cancer. Any new ascites in an adult outside of pregnancy or ovulation should be investigated promptly.",
+      "what_to_ask": "What is likely causing the fluid? Should the fluid be drained (paracentesis) for relief or testing? What tests will identify the cause?"
+    },
+    {
+      "id": "aortic_calcification",
+      "aliases": ["aortic calcification", "vascular calcification", "arterial calcification", "coronary artery calcification", "coronary calcification", "cac", "aortic atherosclerosis"],
+      "name": "Vascular Calcification",
+      "plain_english": "Calcium deposits in artery walls — a sign of atherosclerosis (hardening of the arteries). Commonly found in the aorta, coronary arteries, or pelvic arteries on CT scans. It is a marker of cardiovascular disease risk.",
+      "common_in": ["CT chest", "CT abdomen", "CT calcium score"],
+      "severity": "moderate",
+      "reassurance": "Mild calcification in older adults is very common. Incidental calcification found on a non-cardiac CT scan is a softer finding than a dedicated coronary calcium score (CAC).",
+      "when_to_worry": "Heavy coronary artery calcification (CAC score > 100–400) is a strong independent predictor of heart attack risk and should prompt discussion of statin therapy, aspirin, and aggressive risk factor control.",
+      "what_to_ask": "Should I have a formal coronary calcium score? Does this change my cardiovascular risk category? Should I be on a statin?"
+    },
+    {
+      "id": "uterine_fibroids",
+      "aliases": ["fibroids", "uterine fibroids", "leiomyoma", "leiomyomas", "uterine leiomyoma", "fibroid uterus", "myoma"],
+      "name": "Uterine Fibroids (Leiomyomas)",
+      "plain_english": "Noncancerous growths of the muscle tissue of the uterus. Fibroids are extremely common — found in up to 70–80% of women by age 50. Most cause no symptoms.",
+      "common_in": ["Ultrasound pelvis", "MRI pelvis"],
+      "severity": "low",
+      "reassurance": "Fibroids are almost always benign. The risk of a fibroid being or becoming cancer (leiomyosarcoma) is very low — less than 1 in 1,000. Most fibroids require no treatment.",
+      "when_to_worry": "Fibroids that cause heavy menstrual bleeding, pelvic pain, frequent urination, or fertility problems can be treated with medications, minimally invasive procedures (UFE, myomectomy), or hysterectomy.",
+      "what_to_ask": "How large are they? Are they causing or likely to cause symptoms? What treatment options match my symptoms and family planning goals?"
+    },
+    {
+      "id": "incidental_finding",
+      "aliases": ["incidental finding", "incidentaloma", "incidental", "incidentally noted", "incidentally identified"],
+      "name": "Incidental Finding",
+      "plain_english": "Something discovered on imaging that was not the original reason the scan was ordered. Incidental findings are very common because modern CT and MRI are highly detailed. Most are benign, but some require follow-up.",
+      "common_in": ["CT", "MRI", "PET"],
+      "severity": "varies",
+      "reassurance": "The majority of incidental findings turn out to be completely benign — cysts, small nodules, anatomic variants, or old scars. Finding something doesn't mean something is wrong.",
+      "when_to_worry": "Any incidental finding your radiologist recommends follow-up for should be taken seriously. Ask your ordering doctor to review the recommendation and create a follow-up plan.",
+      "what_to_ask": "What specifically was found? What is the recommended follow-up? How urgent is it? What are the possible causes?"
+    }
+  ]
+}

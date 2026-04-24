@@ -3,6 +3,7 @@ export default {
     inbox: '받은 기록',
     timeline: '건강 기록',
     labs: '검사 결과',
+    imaging: '영상 검사',
     meds: '복용 약물',
     prevention: '예방 관리',
     ask: '기록에 질문하기',

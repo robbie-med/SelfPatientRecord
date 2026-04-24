@@ -192,6 +192,18 @@ export interface Encounter {
   created_at: string;
 }
 
+export interface ImagingExplainer {
+  id: string;
+  name: string;
+  aliases: string[];
+  plain_english: string;
+  common_in: string[];
+  severity: 'low' | 'moderate' | 'high' | 'varies';
+  reassurance: string;
+  when_to_worry: string;
+  what_to_ask: string;
+}
+
 export interface ImagingReport {
   id: string;
   patient_id: string;
@@ -307,6 +319,8 @@ export const createEncounter = (data: Partial<Encounter>) => api.post<Encounter>
 
 export const getImaging = () => api.get<ImagingReport[]>('/imaging').then(r => r.data);
 export const createImaging = (data: Partial<ImagingReport>) => api.post<ImagingReport>('/imaging', data).then(r => r.data);
+export const getImagingExplainer = (term: string) =>
+  api.get<ImagingExplainer>(`/imaging/explain/${encodeURIComponent(term)}`).then(r => r.data).catch(() => null);
 
 export const getModules = () => api.get<ModuleConfig[]>('/modules').then(r => r.data);
 export const enableModule = (id: string) => api.post(`/modules/${id}/enable`).then(r => r.data);

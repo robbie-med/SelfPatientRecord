@@ -3,6 +3,7 @@ export default {
     inbox: 'Inbox',
     timeline: 'Timeline',
     labs: 'Labs & Vitals',
+    imaging: 'Imaging',
     meds: 'Medications',
     prevention: 'Prevention',
     ask: 'Ask My Record',
