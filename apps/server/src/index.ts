@@ -10,13 +10,13 @@ import { isAIEnabled } from './ai/client.js';
 import { extractFromText } from './ai/extractor.js';
 import { chatWithRecord } from './ai/chat.js';
 import { evaluateModuleTriggers } from './rules/module-triggers.js';
+import { seedGuidelines } from './rules/seed-guidelines.js';
+import { detectCareGaps } from './rules/care-gaps.js';
 import { readFileSync, existsSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-initDb();
 
 const app = new Hono();
 
@@ -665,6 +665,7 @@ app.get('/api/guidelines', async (c) => {
 app.get('/api/care-gaps', async (c) => {
   try {
     const patient = await getOrCreatePatient();
+    await detectCareGaps(patient.id);
     const rows = await db.select().from(schema.care_gaps)
       .where(and(eq(schema.care_gaps.patient_id, patient.id), eq(schema.care_gaps.status, 'open')));
     return c.json(rows);
@@ -755,7 +756,15 @@ if (existsSync(staticDir)) {
 }
 
 const port = parseInt(process.env.PORT ?? '3001');
-console.log(`HealthBinder server starting on port ${port}`);
-console.log(`AI enabled: ${isAIEnabled()}`);
 
-serve({ fetch: app.fetch, port });
+async function startup() {
+  initDb();
+  await seedGuidelines();
+  const patient = await getOrCreatePatient();
+  await detectCareGaps(patient.id);
+  console.log(`HealthBinder server starting on port ${port}`);
+  console.log(`AI enabled: ${isAIEnabled()}`);
+  serve({ fetch: app.fetch, port });
+}
+
+startup().catch(console.error);
