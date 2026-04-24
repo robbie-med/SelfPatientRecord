@@ -9,6 +9,8 @@
 
 ## Missing features
 
+- [ ] **Easy AI setup for non-technical users** — Currently AI requires manually editing `.env`. Add a Settings > AI page with a form to enter the API key, select provider (OpenAI / Anthropic / custom), and toggle AI on — writes to `.env` and restarts the server, or stores config in the DB. Include a guided flow explaining what AI is used for, what data is sent, and a link to [Maple Proxy](https://github.com/opensecretcloud/maple-proxy) for privacy-conscious users.
+
 - [ ] **Vitals manual entry UI** — Backend and DB table exist, no UI. Add a Vitals section to the Labs page with a manual add form (blood pressure, weight, heart rate, SpO2, temperature) and trend chart. The API functions `getVitals` and `createVital` already exist in `apps/web/src/api/client.ts`.
 - [ ] **Supplement tracking** — DB table, server routes, and a dedicated Supplements page. Track name, dose, frequency, brand, reason, start date.
 - [ ] **Illness episode logging** — DB table, server routes, and a page for logging acute illness episodes (symptoms, start/end dates, severity, treatments, outcome). Useful for pattern recognition and physician visits.

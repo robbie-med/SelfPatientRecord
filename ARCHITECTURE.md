@@ -152,5 +152,5 @@ All four are stored separately on the patient record.
 
 - AI is **off by default** (`AI_ENABLED=false`)
 - When enabled, only the text you paste (Inbox) or your confirmed health summary (Ask My Record) is sent to the configured endpoint
-- Point `AI_BASE_URL` at [Maple Proxy](https://mapleproxy.com) or a self-hosted model to keep data within your control
+- Point `AI_BASE_URL` at [Maple Proxy](https://github.com/opensecretcloud/maple-proxy) or a self-hosted model to keep data within your control
 - The audit log records every AI-involved action

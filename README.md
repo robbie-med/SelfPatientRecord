@@ -63,7 +63,7 @@ npm run dev
 | `PORT` | `3001` | API server port |
 | `AI_ENABLED` | `false` | Set `true` to enable AI features |
 | `AI_API_KEY` | — | Your OpenAI (or compatible) API key |
-| `AI_BASE_URL` | `https://api.openai.com/v1` | API endpoint — point to Maple Proxy for privacy |
+| `AI_BASE_URL` | `https://api.openai.com/v1` | API endpoint — point to [Maple Proxy](https://github.com/opensecretcloud/maple-proxy) for privacy |
 | `AI_MODEL` | `gpt-4o-mini` | Model name |
 | `DATA_DIR` | `./data` | Where the SQLite database lives |
 
