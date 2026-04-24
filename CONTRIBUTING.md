@@ -1,5 +1,11 @@
 # Contributing to HealthBinder
 
+**Language / 언어 / 言語 / Langue / Sprache / Idioma / Língua / Dil / 语言 / Язык**
+
+[🇺🇸 English](#) · [🇰🇷 한국어](docs/CONTRIBUTING.ko.md) · [🇯🇵 日本語](docs/CONTRIBUTING.ja.md) · [🇫🇷 Français](docs/CONTRIBUTING.fr.md) · [🇩🇪 Deutsch](docs/CONTRIBUTING.de.md) · [🇪🇸 Español](docs/CONTRIBUTING.es.md) · [🇧🇷 Português](docs/CONTRIBUTING.pt-br.md) · [🇹🇷 Türkçe](docs/CONTRIBUTING.tr.md) · [🇨🇳 中文](docs/CONTRIBUTING.zh.md) · [🇷🇺 Русский](docs/CONTRIBUTING.ru.md)
+
+---
+
 Thanks for your interest. This document covers the three most common contribution types: adding a country pack, adding a clinical module trigger, and adding a new page.
 
 ---

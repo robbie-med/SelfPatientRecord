@@ -1,5 +1,11 @@
 # HealthBinder
 
+**Language / 언어 / 言語 / Langue / Sprache / Idioma / Língua / Dil / 语言 / Язык**
+
+[🇺🇸 English](#) · [🇰🇷 한국어](docs/README.ko.md) · [🇯🇵 日本語](docs/README.ja.md) · [🇫🇷 Français](docs/README.fr.md) · [🇩🇪 Deutsch](docs/README.de.md) · [🇪🇸 Español](docs/README.es.md) · [🇧🇷 Português](docs/README.pt-br.md) · [🇹🇷 Türkçe](docs/README.tr.md) · [🇨🇳 中文](docs/README.zh.md) · [🇷🇺 Русский](docs/README.ru.md)
+
+---
+
 A local-first, patient-owned personal health record and AI health organizer. You own your data — it lives in a SQLite database on your machine.
 
 **Not a medical device. Not HIPAA-compliant. Not for emergencies.**
@@ -26,7 +32,7 @@ A local-first, patient-owned personal health record and AI health organizer. You
 | Frontend | React 18, TypeScript, Vite 5, TailwindCSS 3, React Query v5 |
 | AI | OpenAI-compatible SDK (works with OpenAI, Maple Proxy, or any compatible endpoint) |
 | Database | SQLite (single file, local) |
-| i18n | i18next — English + Korean |
+| i18n | i18next — English + Korean (UI); guidelines available for US, Korea, and more |
 | Deployment | Docker (single container) or bare Node |
 
 ---
@@ -89,11 +95,11 @@ docker run -p 3001:3001 -v $(pwd)/data:/app/data --env-file .env healthbinder
 SelfPatientRecord/
 ├── apps/
 │   ├── server/          # Hono API server
-│   │   ├── src/
-│   │   │   ├── ai/      # Extractor + chat
-│   │   │   ├── data/    # Lab + imaging explainer JSON
-│   │   │   ├── db/      # Schema + connection
-│   │   │   └── rules/   # Care gap engine, module triggers, guideline seeder
+│   │   └── src/
+│   │       ├── ai/      # Extractor + chat
+│   │       ├── data/    # Lab + imaging explainer JSON
+│   │       ├── db/      # Schema + connection
+│   │       └── rules/   # Care gap engine, module triggers, guideline seeder
 │   └── web/             # React frontend
 │       └── src/
 │           ├── api/     # Typed API client
@@ -102,10 +108,19 @@ SelfPatientRecord/
 │           └── pages/
 ├── packages/
 │   ├── clinical-rules/  # Module trigger definitions
-│   ├── country-packs/   # Preventive care guidelines (US, Korea)
+│   ├── country-packs/   # Preventive care guidelines by country
 │   └── schemas/         # Shared TypeScript types
+├── docs/                # Translated documentation
 └── .devcontainer/       # Codespaces config
 ```
+
+---
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add country guideline packs, clinical module triggers, lab/imaging explainers, and new pages.
+
+Translations of the contributing guide: [한국어](docs/CONTRIBUTING.ko.md) · [日本語](docs/CONTRIBUTING.ja.md) · [Français](docs/CONTRIBUTING.fr.md) · [Deutsch](docs/CONTRIBUTING.de.md) · [Español](docs/CONTRIBUTING.es.md) · [Português](docs/CONTRIBUTING.pt-br.md) · [Türkçe](docs/CONTRIBUTING.tr.md) · [中文](docs/CONTRIBUTING.zh.md) · [Русский](docs/CONTRIBUTING.ru.md)
 
 ---
 
