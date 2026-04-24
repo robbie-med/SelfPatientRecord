@@ -9,7 +9,7 @@
     "packages/clinical-rules"
   ],
   "scripts": {
-    "dev": "concurrently \"npm run dev --workspace=apps/server\" \"npm run dev --workspace=apps/web\"",
+    "dev": "npx concurrently \"npm run dev --workspace=apps/server\" \"npm run dev --workspace=apps/web\"",
     "build": "npm run build --workspace=apps/server && npm run build --workspace=apps/web",
     "install:all": "npm install"
   },
