@@ -1,0 +1,99 @@
+{
+  "country": "US",
+  "language": "en",
+  "source": "CDC Advisory Committee on Immunization Practices (ACIP)",
+  "source_url": "https://www.cdc.gov/vaccines/schedules/",
+  "version_date": "2024-01-01",
+  "adult_schedule": [
+    {
+      "id": "us-influenza",
+      "vaccine_name": "Influenza (flu)",
+      "description": "Annual flu vaccine recommended for everyone 6 months and older.",
+      "age_min": 0,
+      "age_max": null,
+      "frequency": "annual",
+      "interval_months": 12,
+      "notes": "Recommended every year, ideally by end of October."
+    },
+    {
+      "id": "us-covid19",
+      "vaccine_name": "COVID-19",
+      "description": "Updated COVID-19 vaccine recommended annually for everyone 6 months and older.",
+      "age_min": 0,
+      "age_max": null,
+      "frequency": "annual",
+      "interval_months": 12,
+      "notes": "Updated formulation recommended each fall season."
+    },
+    {
+      "id": "us-tdap-td",
+      "vaccine_name": "Tdap / Td (tetanus, diphtheria, pertussis)",
+      "description": "One dose of Tdap if not previously given; Td booster every 10 years.",
+      "age_min": 11,
+      "age_max": null,
+      "frequency": "every 10 years (Td) after initial Tdap",
+      "interval_months": 120,
+      "notes": "Tdap preferred in pregnancy (27–36 weeks) regardless of prior Tdap."
+    },
+    {
+      "id": "us-pneumococcal",
+      "vaccine_name": "Pneumococcal (PCV15, PCV20, PPSV23)",
+      "description": "Recommended for adults 65+ and younger adults with certain conditions.",
+      "age_min": 19,
+      "age_max": null,
+      "frequency": "series; timing depends on product and prior vaccination",
+      "interval_months": null,
+      "notes": "Consult CDC schedule for specific product recommendations and intervals."
+    },
+    {
+      "id": "us-shingrix",
+      "vaccine_name": "Shingles (Shingrix)",
+      "description": "2-dose series recommended for adults 50+.",
+      "age_min": 50,
+      "age_max": null,
+      "frequency": "2-dose series",
+      "interval_months": null,
+      "notes": "Second dose 2–6 months after first. Recommended even if prior chickenpox or shingles."
+    },
+    {
+      "id": "us-rsv",
+      "vaccine_name": "RSV vaccine",
+      "description": "Single dose for adults 60+ (shared clinical decision making) or 75+.",
+      "age_min": 60,
+      "age_max": null,
+      "frequency": "one time",
+      "interval_months": null,
+      "notes": "Also recommended in pregnancy 32–36 weeks for infant protection."
+    },
+    {
+      "id": "us-hpv",
+      "vaccine_name": "HPV vaccine (Gardasil 9)",
+      "description": "Routine vaccination for adolescents 11–12; catch-up through age 26. Shared decision making ages 27–45.",
+      "age_min": 9,
+      "age_max": 45,
+      "frequency": "2 or 3 dose series",
+      "interval_months": null,
+      "notes": "2 doses if started before age 15; 3 doses if started at 15 or older or immunocompromised."
+    },
+    {
+      "id": "us-hep-a",
+      "vaccine_name": "Hepatitis A",
+      "description": "2-dose series for adults at increased risk or anyone who wants protection.",
+      "age_min": 1,
+      "age_max": null,
+      "frequency": "2-dose series",
+      "interval_months": null,
+      "notes": "Risk factors: travel, liver disease, homelessness, drug use, close contact with adoptee from endemic country."
+    },
+    {
+      "id": "us-hep-b",
+      "vaccine_name": "Hepatitis B",
+      "description": "3-dose series recommended for unvaccinated adults through age 59; shared decision making at 60+.",
+      "age_min": 0,
+      "age_max": null,
+      "frequency": "3-dose series",
+      "interval_months": null,
+      "notes": "Heplisav-B: 2 doses. PreHevbrio: 3 doses. Check serology if uncertain about prior vaccination."
+    }
+  ]
+}

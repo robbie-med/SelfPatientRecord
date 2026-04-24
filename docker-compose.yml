@@ -1,0 +1,30 @@
+version: '3.9'
+
+services:
+  healthbinder:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: healthbinder
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - healthbinder_data:/app/data
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DATA_DIR=/app/data
+      - AI_ENABLED=${AI_ENABLED:-false}
+      - AI_API_KEY=${AI_API_KEY:-}
+      - AI_BASE_URL=${AI_BASE_URL:-https://api.openai.com/v1}
+      - AI_MODEL=${AI_MODEL:-gpt-4o-mini}
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  healthbinder_data:
+    driver: local

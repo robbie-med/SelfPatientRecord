@@ -1,0 +1,198 @@
+{
+  "version": "0.1.0",
+  "modules": [
+    {
+      "id": "diabetes",
+      "name": "Diabetes Panel",
+      "description": "Tracks A1c, glucose, diabetes complications monitoring, and ADA guidelines.",
+      "icon": "🩸",
+      "trigger": {
+        "any": [
+          { "lab": "A1c", "operator": ">=", "value": 6.5 },
+          { "lab": "HbA1c", "operator": ">=", "value": 6.5 },
+          { "diagnosis_contains": ["type 2 diabetes", "type 1 diabetes", "diabetes mellitus", "T2DM", "T1DM"] },
+          { "medication_class": "insulin" },
+          { "medication_name_contains": ["metformin", "glipizide", "glargine", "liraglutide", "semaglutide", "sitagliptin", "empagliflozin", "dapagliflozin"] }
+        ]
+      },
+      "message": "Your records suggest diabetes or diabetes treatment. Enable the Diabetes Panel for A1c tracking, monitoring reminders, and ADA-aligned guidance."
+    },
+    {
+      "id": "prediabetes",
+      "name": "Prediabetes / Metabolic Risk Panel",
+      "description": "Tracks metabolic risk, A1c trend, lifestyle factors, and prevention strategies.",
+      "icon": "⚠️",
+      "trigger": {
+        "any": [
+          { "lab": "A1c", "operator": ">=", "value": 5.7, "and": { "lab": "A1c", "operator": "<", "value": 6.5 } },
+          { "diagnosis_contains": ["prediabetes", "impaired glucose", "impaired fasting", "metabolic syndrome"] }
+        ]
+      },
+      "message": "Your A1c or diagnosis suggests prediabetes or metabolic risk. Enable this panel for monitoring and prevention guidance."
+    },
+    {
+      "id": "liver_health",
+      "name": "Liver Health Panel",
+      "description": "Tracks ALT, AST, bilirubin, liver imaging, and hepatitis screening.",
+      "icon": "🫁",
+      "trigger": {
+        "any": [
+          { "lab": "ALT", "operator": ">", "value": 40 },
+          { "lab": "AST", "operator": ">", "value": 40 },
+          { "lab": "ALT", "operator": ">", "value": 56 },
+          { "diagnosis_contains": ["liver", "hepatitis", "cirrhosis", "MASLD", "MASH", "NAFLD", "NASH", "fatty liver"] }
+        ]
+      },
+      "message": "Elevated liver enzymes or a liver-related diagnosis detected. Enable the Liver Health Panel for trend tracking and screening guidance."
+    },
+    {
+      "id": "kidney_health",
+      "name": "Kidney Health Panel",
+      "description": "Tracks eGFR, creatinine, BMP/CMP labs, proteinuria, and KDIGO guidelines.",
+      "icon": "🫘",
+      "trigger": {
+        "any": [
+          { "lab": "eGFR", "operator": "<", "value": 60 },
+          { "lab": "Creatinine", "operator": ">", "value": 1.2 },
+          { "diagnosis_contains": ["chronic kidney disease", "CKD", "renal failure", "nephropathy", "ESRD"] }
+        ]
+      },
+      "message": "Your records suggest kidney disease or reduced kidney function. Enable the Kidney Health Panel."
+    },
+    {
+      "id": "pregnancy",
+      "name": "Pregnancy Panel",
+      "description": "Tracks prenatal labs, BP, symptoms, and obstetric milestones.",
+      "icon": "🤰",
+      "trigger": {
+        "any": [
+          { "condition_status": "pregnant" },
+          { "diagnosis_contains": ["pregnant", "pregnancy", "obstetric", "prenatal", "antepartum", "gravida"] },
+          { "lab_contains": ["hCG", "beta HCG", "pregnancy test"] }
+        ]
+      },
+      "message": "A pregnancy diagnosis or positive pregnancy test was found. Enable the Pregnancy Panel for prenatal tracking."
+    },
+    {
+      "id": "thyroid",
+      "name": "Thyroid Panel",
+      "description": "Tracks TSH, T4, thyroid medication dosing, and monitoring reminders.",
+      "icon": "🦋",
+      "trigger": {
+        "any": [
+          { "lab": "TSH", "operator": "<", "value": 0.45 },
+          { "lab": "TSH", "operator": ">", "value": 4.5 },
+          { "medication_name_contains": ["levothyroxine", "synthroid", "liothyronine", "methimazole", "propylthiouracil"] },
+          { "diagnosis_contains": ["hypothyroid", "hyperthyroid", "thyroid", "Hashimoto", "Graves"] }
+        ]
+      },
+      "message": "Thyroid findings or medication detected. Enable the Thyroid Panel for TSH tracking and monitoring reminders."
+    },
+    {
+      "id": "dialysis",
+      "name": "Dialysis Panel",
+      "description": "Tracks dialysis sessions, access, labs, weight, and dialysis-specific monitoring.",
+      "icon": "💉",
+      "trigger": {
+        "any": [
+          { "diagnosis_contains": ["dialysis", "ESRD", "end-stage renal", "hemodialysis", "peritoneal dialysis"] },
+          { "medication_name_contains": ["erythropoietin", "epoetin", "darbepoetin", "cinacalcet", "sevelamer"] }
+        ]
+      },
+      "message": "Dialysis diagnosis or related medication found. Enable the Dialysis Panel for session tracking and monitoring."
+    },
+    {
+      "id": "anticoagulation",
+      "name": "Anticoagulation Panel",
+      "description": "Tracks INR, anticoagulant dosing, bleeding risk, and clotting history.",
+      "icon": "💊",
+      "trigger": {
+        "any": [
+          { "medication_name_contains": ["warfarin", "coumadin", "apixaban", "eliquis", "rivaroxaban", "xarelto", "dabigatran", "pradaxa", "heparin", "enoxaparin"] }
+        ]
+      },
+      "message": "An anticoagulant medication was found. Enable the Anticoagulation Panel for INR tracking and safety monitoring."
+    },
+    {
+      "id": "cardiac",
+      "name": "Cardiac / Hypertension Panel",
+      "description": "Tracks BP, lipids, cardiac medications, and ACC/AHA guideline alignment.",
+      "icon": "❤️",
+      "trigger": {
+        "any": [
+          { "diagnosis_contains": ["hypertension", "high blood pressure", "coronary artery disease", "heart failure", "atrial fibrillation", "AFib", "myocardial infarction", "heart attack", "angina"] },
+          { "medication_name_contains": ["lisinopril", "amlodipine", "metoprolol", "atorvastatin", "rosuvastatin", "carvedilol", "losartan", "furosemide", "spironolactone"] }
+        ]
+      },
+      "message": "Cardiac or hypertension diagnoses or medications found. Enable the Cardiac Panel for BP tracking and cardiovascular monitoring."
+    },
+    {
+      "id": "asthma_copd",
+      "name": "Asthma / COPD Panel",
+      "description": "Tracks inhaler use, exacerbations, peak flow, and pulmonary function trends.",
+      "icon": "🌬️",
+      "trigger": {
+        "any": [
+          { "diagnosis_contains": ["asthma", "COPD", "chronic obstructive pulmonary", "bronchospasm"] },
+          { "medication_name_contains": ["albuterol", "budesonide", "fluticasone", "salmeterol", "tiotropium", "ipratropium", "montelukast"] }
+        ]
+      },
+      "message": "Asthma or COPD diagnosis or inhalers found. Enable this panel for exacerbation tracking and pulmonary monitoring."
+    },
+    {
+      "id": "mental_health",
+      "name": "Mental Health Panel",
+      "description": "Tracks mood, medications, therapy notes, and PHQ/GAD screening.",
+      "icon": "🧠",
+      "trigger": {
+        "any": [
+          { "diagnosis_contains": ["depression", "anxiety", "bipolar", "ADHD", "PTSD", "schizophrenia", "OCD"] },
+          { "medication_name_contains": ["sertraline", "escitalopram", "fluoxetine", "bupropion", "venlafaxine", "quetiapine", "aripiprazole", "lithium", "methylphenidate", "amphetamine"] }
+        ]
+      },
+      "message": "Mental health diagnoses or psychiatric medications found. Enable the Mental Health Panel for mood tracking and medication management."
+    },
+    {
+      "id": "cancer_history",
+      "name": "Cancer History / Survivorship Panel",
+      "description": "Tracks cancer history, treatment, survivorship monitoring, and screening.",
+      "icon": "🎗️",
+      "trigger": {
+        "any": [
+          { "diagnosis_contains": ["cancer", "carcinoma", "lymphoma", "leukemia", "tumor", "malignancy", "melanoma", "sarcoma"] }
+        ]
+      },
+      "message": "A cancer diagnosis was found in your records. Enable the Cancer Survivorship Panel for follow-up tracking and monitoring reminders."
+    },
+    {
+      "id": "lipids",
+      "name": "Lipid / Cholesterol Panel",
+      "description": "Tracks LDL, HDL, triglycerides, statin use, and cardiovascular risk.",
+      "icon": "📊",
+      "trigger": {
+        "any": [
+          { "lab": "LDL", "operator": ">", "value": 130 },
+          { "lab": "Total Cholesterol", "operator": ">", "value": 200 },
+          { "lab": "Triglycerides", "operator": ">", "value": 150 },
+          { "medication_name_contains": ["atorvastatin", "rosuvastatin", "simvastatin", "pravastatin", "lovastatin", "ezetimibe", "fenofibrate"] },
+          { "diagnosis_contains": ["hyperlipidemia", "dyslipidemia", "hypercholesterolemia"] }
+        ]
+      },
+      "message": "Elevated lipids or cholesterol-related medications found. Enable the Lipid Panel for trend tracking and cardiovascular risk assessment."
+    },
+    {
+      "id": "osteoporosis",
+      "name": "Bone Health / Osteoporosis Panel",
+      "description": "Tracks DEXA, fracture history, calcium/vitamin D, and bisphosphonate use.",
+      "icon": "🦴",
+      "trigger": {
+        "any": [
+          { "diagnosis_contains": ["osteoporosis", "osteopenia", "fragility fracture", "compression fracture"] },
+          { "medication_name_contains": ["alendronate", "risedronate", "zoledronic acid", "denosumab", "teriparatide"] },
+          { "imaging_contains": ["DEXA", "bone density"] }
+        ]
+      },
+      "message": "Osteoporosis-related findings detected. Enable the Bone Health Panel for density tracking and fracture risk assessment."
+    }
+  ]
+}
