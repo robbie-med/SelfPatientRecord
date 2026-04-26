@@ -6,7 +6,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const COUNTRY_PACKS_DIR = path.resolve(__dirname, '../../../packages/country-packs');
+const COUNTRY_PACKS_DIR = process.env.COUNTRY_PACKS_DIR
+  ?? path.resolve(__dirname, '../../../../packages/country-packs');
 
 interface OrgEntry {
   id: string;
@@ -41,6 +42,7 @@ interface RecEntry {
 interface CountryPack {
   organizations: OrgEntry[];
   recommendations: RecEntry[];
+  last_reviewed?: string;
 }
 
 export async function seedGuidelines(): Promise<void> {
@@ -115,6 +117,23 @@ export async function seedGuidelines(): Promise<void> {
           created_at: new Date().toISOString(),
         });
         recCount++;
+      }
+    }
+
+    if (pack.last_reviewed) {
+      const existing = await db.select().from(schema.guideline_packs)
+        .where(eq(schema.guideline_packs.country, country))
+        .limit(1);
+      if (existing.length) {
+        await db.update(schema.guideline_packs)
+          .set({ last_reviewed: pack.last_reviewed, seeded_at: new Date().toISOString() })
+          .where(eq(schema.guideline_packs.country, country));
+      } else {
+        await db.insert(schema.guideline_packs).values({
+          country,
+          last_reviewed: pack.last_reviewed,
+          seeded_at: new Date().toISOString(),
+        });
       }
     }
   }

@@ -13,12 +13,15 @@ The seeder reads every file matching this path at server startup. No code change
 
 ```jsonc
 {
-  "country": "US",           // ISO 3166-1 alpha-2 country code
-  "language": "en",          // Primary language of the content (BCP 47)
-  "organizations": [...],    // Medical organizations in this country
-  "recommendations": [...]   // Preventive care recommendations
+  "country": "US",              // ISO 3166-1 alpha-2 country code
+  "language": "en",             // Primary language of the content (BCP 47)
+  "last_reviewed": "2025-04-25", // Date the pack was last checked for accuracy (YYYY-MM-DD)
+  "organizations": [...],        // Medical organizations in this country
+  "recommendations": [...]       // Preventive care recommendations
 }
 ```
+
+`last_reviewed` is the date a human last verified that the recommendations reflect current published guidelines. The app shows a warning in the Prevention page when this is more than 12 months ago. Update it whenever you audit or update the pack.
 
 ---
 

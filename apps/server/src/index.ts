@@ -6,7 +6,7 @@ import { v4 as uuid } from 'uuid';
 import { eq, desc, and } from 'drizzle-orm';
 import { db, initDb } from './db/index.js';
 import * as schema from './db/schema.js';
-import { isAIEnabled } from './ai/client.js';
+import { AIConfig, envFallbackConfig } from './ai/client.js';
 import { extractFromText } from './ai/extractor.js';
 import { chatWithRecord } from './ai/chat.js';
 import { evaluateModuleTriggers } from './rules/module-triggers.js';
@@ -22,8 +22,96 @@ const app = new Hono();
 
 app.use('*', cors({ origin: ['http://localhost:5173', 'http://localhost:3000'] }));
 
+// ── AI config ─────────────────────────────────────────────────────────────────
+async function getAIConfig(): Promise<AIConfig> {
+  const rows = await db.select().from(schema.ai_config).limit(1);
+  if (rows.length > 0 && rows[0].api_key) {
+    return {
+      enabled: rows[0].enabled ?? false,
+      provider: rows[0].provider ?? 'ppq',
+      baseUrl: rows[0].base_url ?? 'https://api.ppq.ai/v1',
+      apiKey: rows[0].api_key,
+      extractionModel: rows[0].extraction_model ?? 'anthropic/claude-3.5-haiku',
+      chatModel: rows[0].chat_model ?? 'anthropic/claude-3.5-haiku',
+    };
+  }
+  return envFallbackConfig();
+}
+
+app.get('/api/ai-config', async (c) => {
+  try {
+    const rows = await db.select().from(schema.ai_config).limit(1);
+    if (rows.length > 0) {
+      const row = rows[0];
+      return c.json({
+        enabled: row.enabled ?? false,
+        provider: row.provider ?? 'ppq',
+        base_url: row.base_url ?? 'https://api.ppq.ai/v1',
+        api_key_set: !!row.api_key,
+        extraction_model: row.extraction_model ?? 'anthropic/claude-3.5-haiku',
+        chat_model: row.chat_model ?? 'anthropic/claude-3.5-haiku',
+      });
+    }
+    const fb = envFallbackConfig();
+    return c.json({
+      enabled: fb.enabled,
+      provider: fb.provider,
+      base_url: fb.baseUrl,
+      api_key_set: !!fb.apiKey,
+      extraction_model: fb.extractionModel,
+      chat_model: fb.chatModel,
+    });
+  } catch (e) {
+    console.error(e);
+    return c.json({ error: 'Internal server error' }, 500);
+  }
+});
+
+app.put('/api/ai-config', async (c) => {
+  try {
+    const body = await c.req.json() as {
+      enabled: boolean; provider: string; base_url: string;
+      api_key?: string; extraction_model: string; chat_model: string;
+    };
+    const now = new Date().toISOString();
+    const rows = await db.select().from(schema.ai_config).limit(1);
+
+    if (rows.length > 0) {
+      const updates: Record<string, unknown> = {
+        enabled: body.enabled,
+        provider: body.provider,
+        base_url: body.base_url,
+        extraction_model: body.extraction_model,
+        chat_model: body.chat_model,
+        updated_at: now,
+      };
+      if (body.api_key) updates['api_key'] = body.api_key;
+      await db.update(schema.ai_config).set(updates).where(eq(schema.ai_config.id, rows[0].id));
+    } else {
+      await db.insert(schema.ai_config).values({
+        id: 'singleton',
+        enabled: body.enabled,
+        provider: body.provider,
+        base_url: body.base_url,
+        api_key: body.api_key ?? null,
+        extraction_model: body.extraction_model,
+        chat_model: body.chat_model,
+        updated_at: now,
+      });
+    }
+
+    return c.json({ ok: true });
+  } catch (e) {
+    console.error(e);
+    return c.json({ error: 'Internal server error' }, 500);
+  }
+});
+
 // ── Health ────────────────────────────────────────────────────────────────────
-app.get('/api/health', (c) => c.json({ status: 'ok', ai_enabled: isAIEnabled() }));
+app.get('/api/health', async (c) => {
+  const config = await getAIConfig();
+  return c.json({ status: 'ok', ai_enabled: config.enabled });
+});
 
 // ── Patient ───────────────────────────────────────────────────────────────────
 async function getOrCreatePatient() {
@@ -175,7 +263,8 @@ app.delete('/api/documents/:id', async (c) => {
 
 app.post('/api/documents/:id/extract', async (c) => {
   try {
-    if (!isAIEnabled()) return c.json({ error: 'AI not enabled' }, 503);
+    const config = await getAIConfig();
+    if (!config.enabled) return c.json({ error: 'AI not enabled' }, 503);
     const docId = c.req.param('id');
     const rows = await db.select().from(schema.documents).where(eq(schema.documents.id, docId)).limit(1);
     if (!rows.length) return c.json({ error: 'Not found' }, 404);
@@ -183,7 +272,7 @@ app.post('/api/documents/:id/extract', async (c) => {
 
     await db.update(schema.documents).set({ extraction_status: 'processing' }).where(eq(schema.documents.id, docId));
 
-    const result = await extractFromText(doc.raw_text ?? '');
+    const result = await extractFromText(doc.raw_text ?? '', config);
 
     // Store extracted facts
     const factRows = [];
@@ -713,6 +802,106 @@ app.post('/api/care-gaps/:id/dismiss', async (c) => {
   }
 });
 
+// ── Guideline packs ───────────────────────────────────────────────────────────
+app.get('/api/guideline-packs', async (c) => {
+  try {
+    return c.json(await db.select().from(schema.guideline_packs));
+  } catch (e) {
+    console.error(e);
+    return c.json({ error: 'Internal server error' }, 500);
+  }
+});
+
+// ── Exports ───────────────────────────────────────────────────────────────────
+app.get('/api/export/visit-prep', async (c) => {
+  try {
+    const patient = await getOrCreatePatient();
+    const [conditions, meds, allergyRows, labs, careGaps] = await Promise.all([
+      db.select().from(schema.conditions)
+        .where(and(eq(schema.conditions.patient_id, patient.id), eq(schema.conditions.status, 'active')))
+        .orderBy(schema.conditions.name),
+      db.select().from(schema.medications)
+        .where(and(eq(schema.medications.patient_id, patient.id), eq(schema.medications.status, 'current')))
+        .orderBy(schema.medications.name),
+      db.select().from(schema.allergies)
+        .where(eq(schema.allergies.patient_id, patient.id))
+        .orderBy(schema.allergies.allergen),
+      db.select().from(schema.labs)
+        .where(eq(schema.labs.patient_id, patient.id))
+        .orderBy(desc(schema.labs.collection_date))
+        .limit(60),
+      db.select().from(schema.care_gaps)
+        .where(and(eq(schema.care_gaps.patient_id, patient.id), eq(schema.care_gaps.status, 'open'))),
+    ]);
+
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+    const abnormal_labs = labs.filter(l =>
+      l.interpretation && l.interpretation !== 'normal' &&
+      new Date(l.collection_date) >= sixMonthsAgo
+    );
+
+    return c.json({ patient, conditions, medications: meds, allergies: allergyRows, abnormal_labs, care_gaps: careGaps });
+  } catch (e) {
+    console.error(e);
+    return c.json({ error: 'Internal server error' }, 500);
+  }
+});
+
+app.get('/api/export/handoff', async (c) => {
+  try {
+    const patient = await getOrCreatePatient();
+    const [conditions, meds, allergyRows, labs, vitalRows, vaccines, encounters, careGaps] = await Promise.all([
+      db.select().from(schema.conditions)
+        .where(eq(schema.conditions.patient_id, patient.id))
+        .orderBy(schema.conditions.name),
+      db.select().from(schema.medications)
+        .where(eq(schema.medications.patient_id, patient.id))
+        .orderBy(schema.medications.name),
+      db.select().from(schema.allergies)
+        .where(eq(schema.allergies.patient_id, patient.id))
+        .orderBy(schema.allergies.allergen),
+      db.select().from(schema.labs)
+        .where(eq(schema.labs.patient_id, patient.id))
+        .orderBy(desc(schema.labs.collection_date)),
+      db.select().from(schema.vitals)
+        .where(eq(schema.vitals.patient_id, patient.id))
+        .orderBy(desc(schema.vitals.recorded_at))
+        .limit(30),
+      db.select().from(schema.vaccines)
+        .where(eq(schema.vaccines.patient_id, patient.id))
+        .orderBy(desc(schema.vaccines.administered_date)),
+      db.select().from(schema.encounters)
+        .where(eq(schema.encounters.patient_id, patient.id))
+        .orderBy(desc(schema.encounters.encounter_date))
+        .limit(20),
+      db.select().from(schema.care_gaps)
+        .where(and(eq(schema.care_gaps.patient_id, patient.id), eq(schema.care_gaps.status, 'open'))),
+    ]);
+
+    const latestPerTest = new Map<string, typeof labs[0]>();
+    for (const l of labs) {
+      if (!latestPerTest.has(l.test_name)) latestPerTest.set(l.test_name, l);
+    }
+
+    return c.json({
+      patient,
+      conditions,
+      medications: meds,
+      allergies: allergyRows,
+      labs_latest: Array.from(latestPerTest.values()),
+      vitals: vitalRows,
+      vaccines,
+      encounters,
+      care_gaps: careGaps,
+      generated_at: new Date().toISOString(),
+    });
+  } catch (e) {
+    console.error(e);
+    return c.json({ error: 'Internal server error' }, 500);
+  }
+});
+
 // ── AI Chat ───────────────────────────────────────────────────────────────────
 app.get('/api/chat', async (c) => {
   try {
@@ -727,7 +916,8 @@ app.get('/api/chat', async (c) => {
 
 app.post('/api/chat', async (c) => {
   try {
-    if (!isAIEnabled()) return c.json({ error: 'AI not enabled' }, 503);
+    const config = await getAIConfig();
+    if (!config.enabled) return c.json({ error: 'AI not enabled' }, 503);
     const patient = await getOrCreatePatient();
     const body = await c.req.json() as { message: string; history?: Array<{ role: string; content: string }> };
     const now = new Date().toISOString();
@@ -752,7 +942,7 @@ app.post('/api/chat', async (c) => {
     };
 
     const history = (body.history ?? []).map((m) => ({ role: m.role as 'user' | 'assistant', content: m.content }));
-    const result = await chatWithRecord(body.message, history, context);
+    const result = await chatWithRecord(body.message, history, context, config);
 
     await db.insert(schema.chat_messages).values([
       { id: uuid(), patient_id: patient.id, role: 'user', content: body.message, citations: '[]', created_at: now },
@@ -791,7 +981,8 @@ async function startup() {
   const patient = await getOrCreatePatient();
   await detectCareGaps(patient.id);
   console.log(`HealthBinder server starting on port ${port}`);
-  console.log(`AI enabled: ${isAIEnabled()}`);
+  const aiConfig = await getAIConfig();
+  console.log(`AI enabled: ${aiConfig.enabled}`);
   serve({ fetch: app.fetch, port });
 }
 

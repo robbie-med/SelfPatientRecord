@@ -2,9 +2,10 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import {
-  getCareGaps, dismissCareGap, getGuidelines, getVaccines,
+  getCareGaps, dismissCareGap, getGuidelines, getVaccines, getGuidelinePacks,
   createVaccine, type CareGap, type Recommendation, type Vaccine,
 } from '../api/client';
+import { format, parseISO, differenceInDays } from 'date-fns';
 import clsx from 'clsx';
 
 const URGENCY_COLORS: Record<string, string> = {
@@ -24,6 +25,10 @@ export default function Prevention() {
   const { data: gaps = [] } = useQuery({ queryKey: ['care-gaps'], queryFn: getCareGaps });
   const { data: guidelines = [] } = useQuery({ queryKey: ['guidelines'], queryFn: getGuidelines });
   const { data: vaccines = [] } = useQuery({ queryKey: ['vaccines'], queryFn: getVaccines });
+  const { data: packs = [] } = useQuery({ queryKey: ['guideline-packs'], queryFn: getGuidelinePacks });
+
+  const STALE_DAYS = 365;
+  const stalePacks = packs.filter(p => differenceInDays(new Date(), parseISO(p.last_reviewed)) > STALE_DAYS);
 
   const [showVaccineForm, setShowVaccineForm] = useState(false);
   const [vaccineForm, setVaccineForm] = useState({ vaccine_name: '', administered_date: '', dose_number: '', facility: '', lot_number: '' });
@@ -59,6 +64,14 @@ export default function Prevention() {
         <h1 className="text-xl font-semibold text-gray-900">{t('prevention.title')}</h1>
         <p className="text-sm text-gray-500 mt-1">{t('prevention.description')}</p>
       </div>
+
+      {/* Staleness warnings */}
+      {stalePacks.map(p => (
+        <div key={p.country} className="flex gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800">
+          <span className="shrink-0">⚠️</span>
+          <span>{t('prevention.packStale', { country: p.country, date: format(parseISO(p.last_reviewed), 'MMMM d, yyyy') })}</span>
+        </div>
+      ))}
 
       {/* Care gaps */}
       <div>

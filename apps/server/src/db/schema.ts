@@ -246,6 +246,23 @@ export const chat_messages = sqliteTable('chat_messages', {
   created_at: text('created_at').notNull().$defaultFn(now),
 });
 
+export const ai_config = sqliteTable('ai_config', {
+  id: text('id').primaryKey(),
+  enabled: integer('enabled', { mode: 'boolean' }).default(false),
+  provider: text('provider').default('ppq'),
+  base_url: text('base_url').default('https://api.ppq.ai/v1'),
+  api_key: text('api_key'),
+  extraction_model: text('extraction_model').default('anthropic/claude-3.5-haiku'),
+  chat_model: text('chat_model').default('anthropic/claude-3.5-haiku'),
+  updated_at: text('updated_at').notNull().$defaultFn(now),
+});
+
+export const guideline_packs = sqliteTable('guideline_packs', {
+  country: text('country').primaryKey(),
+  last_reviewed: text('last_reviewed').notNull(),
+  seeded_at: text('seeded_at').notNull().$defaultFn(() => new Date().toISOString()),
+});
+
 export const audit_log = sqliteTable('audit_log', {
   id: text('id').primaryKey(),
   patient_id: text('patient_id'),

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { usePatient, useUpdatePatient } from '../hooks/usePatient';
-import { getHealth, getModules, enableModule, disableModule } from '../api/client';
+import { getHealth, getModules, enableModule, disableModule, getAIConfig, updateAIConfig, AIConfigUpdate, getVisitPrepExport, getHandoffExport, type VisitPrepExport, type HandoffExport } from '../api/client';
 import clsx from 'clsx';
 
 const COUNTRIES = [
@@ -24,14 +24,145 @@ const ORGS = [
   { id: 'kda', label: 'Korean Diabetes Association' }, { id: 'nhis_kr', label: 'Korea NHIS' },
 ];
 
+const PROVIDERS = [
+  { id: 'ppq', label: 'PPQ.AI', baseUrl: 'https://api.ppq.ai/v1' },
+  { id: 'openai', label: 'OpenAI', baseUrl: 'https://api.openai.com/v1' },
+  { id: 'maple', label: 'Maple Proxy (local)', baseUrl: 'http://localhost:8080/v1' },
+  { id: 'custom', label: 'Custom', baseUrl: '' },
+];
+
+const MODELS_BY_PROVIDER: Record<string, Array<{ id: string; label: string }>> = {
+  ppq: [
+    { id: 'anthropic/claude-3.5-haiku', label: 'Claude 3.5 Haiku — recommended' },
+    { id: 'anthropic/claude-sonnet-4.5', label: 'Claude Sonnet 4.5' },
+    { id: 'claude-sonnet-4.6', label: 'Claude Sonnet 4.6' },
+    { id: 'google/gemini-2.5-flash', label: 'Gemini 2.5 Flash' },
+    { id: 'google/gemini-2.5-flash-lite', label: 'Gemini 2.5 Flash Lite — budget' },
+    { id: 'deepseek/deepseek-chat-v3.1', label: 'DeepSeek Chat v3.1 — budget' },
+    { id: 'private/gpt-oss-120b', label: 'GPT-OSS 120B — TEE private' },
+    { id: 'private/deepseek-r1-0528', label: 'DeepSeek R1 — TEE private, reasoning' },
+  ],
+  openai: [
+    { id: 'gpt-4o-mini', label: 'GPT-4o mini — recommended' },
+    { id: 'gpt-4o', label: 'GPT-4o' },
+  ],
+  maple: [
+    { id: 'claude-3-5-haiku-20241022', label: 'Claude 3.5 Haiku — recommended' },
+    { id: 'claude-3-5-sonnet-20241022', label: 'Claude 3.5 Sonnet' },
+    { id: 'claude-sonnet-4-5-20251001', label: 'Claude Sonnet 4.5' },
+  ],
+  custom: [],
+};
+
+function printHtml(html: string) {
+  const win = window.open('', '_blank', 'width=820,height=700');
+  if (!win) return;
+  win.document.write(html);
+  win.document.close();
+  win.focus();
+  setTimeout(() => win.print(), 400);
+}
+
+function visitPrepHtml(data: VisitPrepExport): string {
+  const name = data.patient.preferred_name || data.patient.legal_name;
+  const dob = data.patient.date_of_birth ?? 'Unknown';
+  const date = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+  const section = (title: string, items: string[], empty: string) =>
+    `<h2>${title}</h2>${items.length
+      ? `<ul>${items.map(i => `<li>${i}</li>`).join('')}</ul>`
+      : `<p class="empty">${empty}</p>`}`;
+
+  return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Visit Prep — ${name}</title>
+<style>body{font-family:Georgia,serif;max-width:680px;margin:40px auto;color:#111;font-size:14px;line-height:1.6}
+h1{font-size:20px;margin-bottom:4px}.meta{color:#555;font-size:13px;margin-bottom:24px}
+h2{font-size:13px;font-weight:bold;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #ddd;padding-bottom:4px;margin-top:20px;margin-bottom:8px}
+ul{margin:0;padding-left:20px}li{margin-bottom:4px}.empty{color:#888;font-style:italic}
+.footer{margin-top:32px;padding-top:12px;border-top:1px solid #ddd;font-size:11px;color:#999}
+@media print{body{margin:20px}}</style></head><body>
+<h1>Visit Preparation Summary</h1>
+<p class="meta">${name} · DOB: ${dob} · ${data.patient.sex_at_birth} · ${date}</p>
+${section('Active Conditions',
+    data.conditions.map(c => `${c.name}${c.onset_date ? ` (since ${c.onset_date})` : ''}`),
+    'No active conditions recorded.')}
+${section('Current Medications',
+    data.medications.map(m => [m.name, m.dose, m.frequency, m.indication ? `for ${m.indication}` : ''].filter(Boolean).join(' — ')),
+    'No current medications recorded.')}
+${section('Allergies',
+    data.allergies.map(a => `${a.allergen}${a.reaction ? ` → ${a.reaction}` : ''}${a.severity ? ` (${a.severity})` : ''}`),
+    'No allergies recorded.')}
+${section('Recent Abnormal Labs (last 6 months)',
+    data.abnormal_labs.map(l => `${l.test_name}: <strong>${l.value}${l.unit ? ' ' + l.unit : ''}</strong> (${l.interpretation}) — ${l.collection_date}`),
+    'No recent abnormal labs.')}
+${section('Open Care Gaps',
+    data.care_gaps.map(g => `${g.title} [${g.urgency}]`),
+    'No open care gaps.')}
+<p class="footer">Generated from HealthBinder personal health record. May be incomplete. Not a substitute for clinical records.</p>
+</body></html>`;
+}
+
+function handoffHtml(data: HandoffExport): string {
+  const name = data.patient.preferred_name || data.patient.legal_name;
+  const dob = data.patient.date_of_birth ?? 'Unknown';
+  const date = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+  const section = (title: string, items: string[], empty: string) =>
+    `<h2>${title}</h2>${items.length
+      ? `<ul>${items.map(i => `<li>${i}</li>`).join('')}</ul>`
+      : `<p class="empty">${empty}</p>`}`;
+
+  const condByStatus = (status: string) =>
+    data.conditions.filter(c => c.status === status).map(c => `${c.name}${c.onset_date ? ` (since ${c.onset_date})` : ''}`);
+
+  return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Physician Handoff — ${name}</title>
+<style>body{font-family:Georgia,serif;max-width:720px;margin:40px auto;color:#111;font-size:13px;line-height:1.6}
+h1{font-size:20px;margin-bottom:4px}.meta{color:#555;font-size:12px;margin-bottom:24px}
+h2{font-size:12px;font-weight:bold;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #ddd;padding-bottom:3px;margin-top:18px;margin-bottom:6px}
+ul{margin:0;padding-left:20px}li{margin-bottom:3px}.empty{color:#888;font-style:italic}
+.footer{margin-top:32px;padding-top:12px;border-top:1px solid #ddd;font-size:11px;color:#999}
+@media print{body{margin:20px}}</style></head><body>
+<h1>Physician Handoff Summary</h1>
+<p class="meta">${name} · DOB: ${dob} · ${data.patient.sex_at_birth} · Current country: ${data.patient.current_country} · Generated: ${date}</p>
+${section('Active Conditions', condByStatus('active'), 'None.')}
+${section('Historical / Resolved Conditions', [...condByStatus('resolved'), ...condByStatus('historical')], 'None.')}
+${section('Current Medications',
+    data.medications.filter(m => m.status === 'current').map(m => [m.name, m.generic_name ? `(${m.generic_name})` : '', m.dose, m.route, m.frequency, m.indication ? `for ${m.indication}` : ''].filter(Boolean).join(' ')),
+    'None.')}
+${section('Prior Medications',
+    data.medications.filter(m => m.status !== 'current').map(m => `${m.name}${m.end_date ? ` — stopped ${m.end_date}` : ''}`),
+    'None.')}
+${section('Allergies',
+    data.allergies.map(a => `${a.allergen}${a.reaction ? ` → ${a.reaction}` : ''}${a.severity ? ` (${a.severity})` : ''}`),
+    'None.')}
+${section('Latest Lab Results',
+    data.labs_latest.map(l => `${l.test_name}: ${l.value}${l.unit ? ' ' + l.unit : ''} — ${l.collection_date}${l.interpretation && l.interpretation !== 'normal' ? ` <strong>[${l.interpretation}]</strong>` : ''}`),
+    'No labs recorded.')}
+${section('Recent Vitals',
+    data.vitals.map(v => `${v.vital_type.replace(/_/g, ' ')}: ${v.value}${v.unit ? ' ' + v.unit : ''} — ${v.recorded_at.slice(0, 10)}`),
+    'No vitals recorded.')}
+${section('Vaccines',
+    data.vaccines.map(v => `${v.vaccine_name}${v.dose_number ? ` (dose ${v.dose_number})` : ''} — ${v.administered_date}`),
+    'No vaccines recorded.')}
+${section('Recent Encounters',
+    data.encounters.map(e => `${e.encounter_date}: ${e.encounter_type.replace(/_/g, ' ')}${e.facility ? ` at ${e.facility}` : ''}${e.chief_complaint ? ` — ${e.chief_complaint}` : ''}`),
+    'No encounters recorded.')}
+${section('Open Care Gaps',
+    data.care_gaps.map(g => `${g.title} [${g.urgency}]`),
+    'None.')}
+<p class="footer">Generated from HealthBinder personal health record on ${date}. May be incomplete. Verify against clinical records before clinical use.</p>
+</body></html>`;
+}
+
 type Section = 'profile' | 'guidelines' | 'ai' | 'modules' | 'data';
 
 export default function Settings() {
   const { t } = useTranslation();
+  const qc = useQueryClient();
   const { data: patient } = usePatient();
   const updatePatient = useUpdatePatient();
   const { data: health } = useQuery({ queryKey: ['health'], queryFn: getHealth });
   const { data: modules = [] } = useQuery({ queryKey: ['modules'], queryFn: getModules });
+  const { data: aiConfigData } = useQuery({ queryKey: ['ai-config'], queryFn: getAIConfig });
 
   const [section, setSection] = useState<Section>('profile');
   const [saved, setSaved] = useState(false);
@@ -48,6 +179,34 @@ export default function Settings() {
     default_country: 'US', comparison_countries: [] as string[],
     preferred_organizations: ['uspstf', 'cdc', 'ada', 'acog'],
     show_foreign_guidelines: false,
+  });
+
+  // AI config form state
+  const [aiForm, setAiForm] = useState<AIConfigUpdate & { custom_extraction: boolean; custom_chat: boolean }>({
+    enabled: false,
+    provider: 'ppq',
+    base_url: 'https://api.ppq.ai/v1',
+    api_key: '',
+    extraction_model: 'anthropic/claude-3.5-haiku',
+    chat_model: 'anthropic/claude-3.5-haiku',
+    custom_extraction: false,
+    custom_chat: false,
+  });
+  const [aiSaved, setAiSaved] = useState(false);
+
+  const saveAIConfig = useMutation({
+    mutationFn: (data: AIConfigUpdate) => updateAIConfig(data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['ai-config'] });
+      qc.invalidateQueries({ queryKey: ['health'] });
+      setAiSaved(true);
+      setTimeout(() => setAiSaved(false), 2000);
+    },
+  });
+
+  const toggleModule = useMutation({
+    mutationFn: ({ id, on }: { id: string; on: boolean }) => on ? enableModule(id) : disableModule(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['modules'] }),
   });
 
   useEffect(() => {
@@ -68,10 +227,59 @@ export default function Settings() {
     }
   }, [patient]);
 
+  useEffect(() => {
+    if (aiConfigData) {
+      const knownModels = MODELS_BY_PROVIDER[aiConfigData.provider] ?? [];
+      const exKnown = knownModels.some(m => m.id === aiConfigData.extraction_model);
+      const chKnown = knownModels.some(m => m.id === aiConfigData.chat_model);
+      setAiForm(f => ({
+        ...f,
+        enabled: aiConfigData.enabled,
+        provider: aiConfigData.provider,
+        base_url: aiConfigData.base_url,
+        api_key: '',
+        extraction_model: aiConfigData.extraction_model,
+        chat_model: aiConfigData.chat_model,
+        custom_extraction: !exKnown && knownModels.length > 0,
+        custom_chat: !chKnown && knownModels.length > 0,
+      }));
+    }
+  }, [aiConfigData]);
+
+  const handleProviderChange = (providerId: string) => {
+    const provider = PROVIDERS.find(p => p.id === providerId);
+    const defaultModel = MODELS_BY_PROVIDER[providerId]?.[0]?.id ?? '';
+    setAiForm(f => ({
+      ...f,
+      provider: providerId,
+      base_url: providerId !== 'custom' ? (provider?.baseUrl ?? f.base_url) : f.base_url,
+      extraction_model: defaultModel || f.extraction_model,
+      chat_model: defaultModel || f.chat_model,
+      custom_extraction: providerId === 'custom',
+      custom_chat: providerId === 'custom',
+    }));
+  };
+
+  const handlePrintVisitPrep = async () => {
+    const data = await getVisitPrepExport();
+    printHtml(visitPrepHtml(data));
+  };
+
+  const handlePrintHandoff = async () => {
+    const data = await getHandoffExport();
+    printHtml(handoffHtml(data));
+  };
+
   const handleSaveProfile = () => {
     updatePatient.mutate({ ...form, guideline_lens: { ...lens, display_language: form.preferred_language, export_language: form.preferred_language } }, {
       onSuccess: () => { setSaved(true); setTimeout(() => setSaved(false), 2000); },
     });
+  };
+
+  const handleSaveAI = () => {
+    const { custom_extraction, custom_chat, ...payload } = aiForm;
+    void custom_extraction; void custom_chat;
+    saveAIConfig.mutate(payload.api_key ? payload : { ...payload, api_key: undefined });
   };
 
   const toggleOrg = (id: string) => {
@@ -81,6 +289,9 @@ export default function Settings() {
   const toggleComparison = (code: string) => {
     setLens(l => ({ ...l, comparison_countries: l.comparison_countries.includes(code) ? l.comparison_countries.filter(c => c !== code) : [...l.comparison_countries, code] }));
   };
+
+  const currentModels = MODELS_BY_PROVIDER[aiForm.provider] ?? [];
+  const isCustomProvider = aiForm.provider === 'custom';
 
   const SECTIONS: { key: Section; label: string }[] = [
     { key: 'profile', label: t('settings.profile') },
@@ -198,20 +409,149 @@ export default function Settings() {
       {section === 'ai' && (
         <div className="bg-white border border-gray-200 rounded-xl p-5 space-y-4">
           <div className="flex items-center gap-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-            <span>⚠️</span>
+            <span className="shrink-0">⚠️</span>
             <p className="text-xs text-amber-800">{t('settings.aiWarning')}</p>
           </div>
+
+          {/* Enable toggle */}
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-gray-700">{t('settings.aiEnabled')}</span>
-            <div className={clsx('text-xs px-2 py-1 rounded-full', health?.ai_enabled ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600')}>
-              {health?.ai_enabled ? 'Enabled' : 'Disabled'}
-            </div>
+            <label className="text-sm font-medium text-gray-700">{t('settings.aiEnabled')}</label>
+            <button
+              onClick={() => setAiForm(f => ({ ...f, enabled: !f.enabled }))}
+              className={clsx('relative w-11 h-6 rounded-full transition-colors', aiForm.enabled ? 'bg-blue-600' : 'bg-gray-300')}
+            >
+              <span className={clsx('absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform', aiForm.enabled ? 'translate-x-5' : 'translate-x-0.5')} />
+            </button>
           </div>
-          <p className="text-xs text-gray-500">AI features are controlled via environment variables. Set <code className="bg-gray-100 px-1 rounded">AI_ENABLED=true</code> and <code className="bg-gray-100 px-1 rounded">AI_API_KEY</code> in your <code className="bg-gray-100 px-1 rounded">.env</code> file and restart the server.</p>
+
+          {/* Provider */}
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">{t('settings.aiUrl')}</label>
-            <p className="text-xs text-gray-400">Set via <code className="bg-gray-100 px-1 rounded">AI_BASE_URL</code> in .env (default: OpenAI). Point to Maple Proxy for enhanced privacy.</p>
+            <label className="block text-xs font-medium text-gray-700 mb-1">{t('settings.aiProvider')}</label>
+            <select
+              value={aiForm.provider}
+              onChange={e => handleProviderChange(e.target.value)}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              {PROVIDERS.map(p => <option key={p.id} value={p.id}>{p.label}</option>)}
+            </select>
           </div>
+
+          {/* Base URL */}
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1">{t('settings.aiBaseUrl')}</label>
+            <input
+              type="text"
+              value={aiForm.base_url}
+              onChange={e => setAiForm(f => ({ ...f, base_url: e.target.value }))}
+              disabled={!isCustomProvider}
+              className={clsx('w-full border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500', !isCustomProvider && 'bg-gray-50 text-gray-500')}
+            />
+          </div>
+
+          {/* API key */}
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <label className="text-xs font-medium text-gray-700">{t('settings.aiKey')}</label>
+              {aiConfigData?.api_key_set && !aiForm.api_key && (
+                <span className="text-xs text-green-600">✓ {t('settings.aiKeySet')}</span>
+              )}
+            </div>
+            <input
+              type="password"
+              value={aiForm.api_key ?? ''}
+              onChange={e => setAiForm(f => ({ ...f, api_key: e.target.value }))}
+              placeholder={aiConfigData?.api_key_set ? t('settings.aiNewKeyPlaceholder') : t('settings.aiKeyPlaceholder')}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              autoComplete="new-password"
+            />
+          </div>
+
+          {/* Extraction model */}
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1">{t('settings.aiExtractionModel')}</label>
+            {(isCustomProvider || aiForm.custom_extraction) ? (
+              <input
+                type="text"
+                value={aiForm.extraction_model}
+                onChange={e => setAiForm(f => ({ ...f, extraction_model: e.target.value }))}
+                placeholder="e.g. anthropic/claude-3.5-haiku"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            ) : (
+              <div className="flex gap-2">
+                <select
+                  value={currentModels.some(m => m.id === aiForm.extraction_model) ? aiForm.extraction_model : '__custom__'}
+                  onChange={e => {
+                    if (e.target.value === '__custom__') {
+                      setAiForm(f => ({ ...f, custom_extraction: true, extraction_model: '' }));
+                    } else {
+                      setAiForm(f => ({ ...f, extraction_model: e.target.value }));
+                    }
+                  }}
+                  className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  {currentModels.map(m => <option key={m.id} value={m.id}>{m.label}</option>)}
+                  <option value="__custom__">Other (enter model ID)…</option>
+                </select>
+              </div>
+            )}
+            <p className="text-xs text-gray-400 mt-1">{t('settings.aiExtractionModelHint')}</p>
+          </div>
+
+          {/* Chat model */}
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1">{t('settings.aiChatModel')}</label>
+            {(isCustomProvider || aiForm.custom_chat) ? (
+              <input
+                type="text"
+                value={aiForm.chat_model}
+                onChange={e => setAiForm(f => ({ ...f, chat_model: e.target.value }))}
+                placeholder="e.g. anthropic/claude-3.5-haiku"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            ) : (
+              <select
+                value={currentModels.some(m => m.id === aiForm.chat_model) ? aiForm.chat_model : '__custom__'}
+                onChange={e => {
+                  if (e.target.value === '__custom__') {
+                    setAiForm(f => ({ ...f, custom_chat: true, chat_model: '' }));
+                  } else {
+                    setAiForm(f => ({ ...f, chat_model: e.target.value }));
+                  }
+                }}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                {currentModels.map(m => <option key={m.id} value={m.id}>{m.label}</option>)}
+                <option value="__custom__">Other (enter model ID)…</option>
+              </select>
+            )}
+            <p className="text-xs text-gray-400 mt-1">{t('settings.aiChatModelHint')}</p>
+          </div>
+
+          {/* TEE note when private model selected */}
+          {(aiForm.extraction_model.startsWith('private/') || aiForm.chat_model.startsWith('private/')) && (
+            <div className="flex gap-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+              <span className="shrink-0">🔒</span>
+              <p className="text-xs text-green-800">{t('settings.aiTeeNote')}</p>
+            </div>
+          )}
+
+          {/* Current status */}
+          <div className="flex items-center gap-2 text-xs text-gray-500">
+            <span>Current status:</span>
+            <span className={clsx('px-2 py-0.5 rounded-full', health?.ai_enabled ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500')}>
+              {health?.ai_enabled ? 'Active' : 'Inactive'}
+            </span>
+            {health?.ai_enabled && <span className="text-gray-400">(changes take effect immediately)</span>}
+          </div>
+
+          <button
+            onClick={handleSaveAI}
+            disabled={saveAIConfig.isPending}
+            className="w-full bg-blue-600 text-white rounded-lg py-2 text-sm hover:bg-blue-700 disabled:opacity-50"
+          >
+            {aiSaved ? `✓ ${t('settings.saved')}` : t('common.save')}
+          </button>
         </div>
       )}
 
@@ -234,8 +574,9 @@ export default function Settings() {
                         <div className="text-xs text-gray-500">{m.trigger_reason ?? m.description}</div>
                       </div>
                       <button
-                        onClick={() => m.status === 'on' ? disableModule(m.id) : enableModule(m.id)}
-                        className={clsx('text-xs px-3 py-1.5 rounded-lg shrink-0', m.status === 'on' ? 'bg-gray-100 text-gray-600 hover:bg-gray-200' : 'bg-blue-600 text-white hover:bg-blue-700')}
+                        onClick={() => toggleModule.mutate({ id: m.id, on: m.status !== 'on' })}
+                        disabled={toggleModule.isPending}
+                        className={clsx('text-xs px-3 py-1.5 rounded-lg shrink-0 disabled:opacity-50', m.status === 'on' ? 'bg-gray-100 text-gray-600 hover:bg-gray-200' : 'bg-blue-600 text-white hover:bg-blue-700')}
                       >
                         {m.status === 'on' ? t('modules.disable') : t('modules.enable')}
                       </button>
@@ -251,6 +592,22 @@ export default function Settings() {
       {/* Data */}
       {section === 'data' && (
         <div className="bg-white border border-gray-200 rounded-xl p-5 space-y-4">
+          <div>
+            <h3 className="text-sm font-medium text-gray-700 mb-1">{t('settings.exportVisitPrep')}</h3>
+            <p className="text-xs text-gray-500 mb-2">Active conditions, current meds, allergies, recent abnormal labs, and open care gaps — formatted for your next appointment.</p>
+            <button onClick={handlePrintVisitPrep} className="text-sm bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200">
+              🖨️ Print visit prep
+            </button>
+          </div>
+          <hr className="border-gray-100" />
+          <div>
+            <h3 className="text-sm font-medium text-gray-700 mb-1">{t('settings.exportHandoff')}</h3>
+            <p className="text-xs text-gray-500 mb-2">Full problem list, all medications, labs, vitals, vaccines, and encounters — for sharing with a new provider.</p>
+            <button onClick={handlePrintHandoff} className="text-sm bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200">
+              🖨️ Print handoff summary
+            </button>
+          </div>
+          <hr className="border-gray-100" />
           <div>
             <h3 className="text-sm font-medium text-gray-700 mb-1">{t('settings.exportAll')}</h3>
             <p className="text-xs text-gray-500 mb-2">Downloads your complete health record as JSON.</p>

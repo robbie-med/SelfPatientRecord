@@ -1,3 +1,7 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 # HealthBinder — Claude Code Context
 
 ## What this is
@@ -8,9 +12,36 @@ A local-first, single-tenant personal health record. One patient, one SQLite dat
 
 - **Backend**: Node.js 20, Hono, better-sqlite3, Drizzle ORM, Zod — `apps/server/`
 - **Frontend**: React 18, TypeScript, Vite 5, TailwindCSS 3, React Query v5 — `apps/web/`
-- **Database**: SQLite, single file, schema initialized via raw SQL in `apps/server/src/db/index.ts`
+- **Database**: SQLite at `$DATA_DIR/healthbinder.db` (default `./data/`, relative to `apps/server/`)
 - **AI**: OpenAI-compatible SDK, off by default (`AI_ENABLED=false` in `.env`)
 - **i18n**: English + Korean, `apps/web/src/i18n/en.ts` + `ko.ts`
+
+## Commands
+
+```bash
+# From repo root
+npm install              # install all workspace deps
+npm run dev              # server (:3001) + Vite (:5173) concurrently
+npm run build            # tsc (server) then tsc+vite build (web)
+
+# Per workspace
+npm run dev --workspace=apps/server    # server only (tsx watch)
+npm run dev --workspace=apps/web       # Vite only
+npm run build --workspace=apps/server  # tsc
+npm run build --workspace=apps/web     # tsc && vite build
+```
+
+There is no test suite. Type checking (`tsc`) is the main correctness gate.
+
+Vite proxies `/api/*` → `http://localhost:3001`, so the frontend always talks to `:5173` in dev.
+
+## Environment setup
+
+```bash
+cp .env.example .env    # then fill in AI_API_KEY if using AI features
+```
+
+Key env vars: `PORT` (default 3001), `DATA_DIR` (default `./data`), `AI_ENABLED`, `AI_API_KEY`, `AI_BASE_URL`, `AI_MODEL`.
 
 ## Non-negotiable invariants
 
@@ -46,6 +77,10 @@ initDb() → seedGuidelines() → getOrCreatePatient() → detectCareGaps() → 
 ```
 
 `detectCareGaps()` also runs on every `GET /api/care-gaps` request.
+
+## Data flow (high level)
+
+User pastes raw text → `POST /api/documents` → AI extracts typed JSON → staging in `extracted_facts` → user confirms each fact via FactCard UI → `POST /api/documents/:id/confirm` → canonical tables (`conditions`, `medications`, `labs`, `vitals`, `allergies`, `vaccines`, `encounters`, `imaging_reports`) → care gaps engine + module triggers + patient context builder → `GET /api/ask` (chat).
 
 ## Adding things
 

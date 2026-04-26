@@ -1,4 +1,4 @@
-import { createAIClient, getModel } from './client.js';
+import { AIConfig, createAIClientFromConfig } from './client.js';
 
 export interface PatientContext {
   age?: number;
@@ -43,9 +43,10 @@ Return JSON: {"answer": "...", "citations": [{"fact_type": "...", "label": "..."
 export async function chatWithRecord(
   message: string,
   history: ChatMessage[],
-  context: PatientContext
+  context: PatientContext,
+  config: AIConfig
 ): Promise<ChatResponse> {
-  const client = createAIClient();
+  const client = createAIClientFromConfig(config);
 
   const contextSummary = buildContextSummary(context);
 
@@ -60,7 +61,7 @@ export async function chatWithRecord(
   ];
 
   const response = await client.chat.completions.create({
-    model: getModel(),
+    model: config.chatModel,
     messages,
     response_format: { type: 'json_object' },
     temperature: 0.2,

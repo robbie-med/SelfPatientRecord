@@ -326,6 +326,13 @@ export const getModules = () => api.get<ModuleConfig[]>('/modules').then(r => r.
 export const enableModule = (id: string) => api.post(`/modules/${id}/enable`).then(r => r.data);
 export const disableModule = (id: string) => api.post(`/modules/${id}/disable`).then(r => r.data);
 
+export interface GuidelinePack {
+  country: string;
+  last_reviewed: string;
+  seeded_at: string;
+}
+
+export const getGuidelinePacks = () => api.get<GuidelinePack[]>('/guideline-packs').then(r => r.data);
 export const getGuidelines = () => api.get<Recommendation[]>('/guidelines').then(r => r.data);
 export const getCareGaps = () => api.get<CareGap[]>('/care-gaps').then(r => r.data);
 export const dismissCareGap = (id: string) => api.post(`/care-gaps/${id}/dismiss`).then(r => r.data);
@@ -334,3 +341,49 @@ export const getChatHistory = () => api.get<ChatMessage[]>('/chat').then(r => r.
 export const sendChat = (message: string, history: ChatMessage[]) =>
   api.post<{ answer: string; citations: Citation[] }>('/chat', { message, history }).then(r => r.data);
 export const clearChat = () => api.delete('/chat').then(r => r.data);
+
+export interface AIConfigResponse {
+  enabled: boolean;
+  provider: string;
+  base_url: string;
+  api_key_set: boolean;
+  extraction_model: string;
+  chat_model: string;
+}
+
+export interface AIConfigUpdate {
+  enabled: boolean;
+  provider: string;
+  base_url: string;
+  api_key?: string;
+  extraction_model: string;
+  chat_model: string;
+}
+
+export const getAIConfig = () => api.get<AIConfigResponse>('/ai-config').then(r => r.data);
+export const updateAIConfig = (data: AIConfigUpdate) => api.put<{ ok: boolean }>('/ai-config', data).then(r => r.data);
+
+export interface VisitPrepExport {
+  patient: Patient;
+  conditions: Condition[];
+  medications: Medication[];
+  allergies: Allergy[];
+  abnormal_labs: Lab[];
+  care_gaps: CareGap[];
+}
+
+export interface HandoffExport {
+  patient: Patient;
+  conditions: Condition[];
+  medications: Medication[];
+  allergies: Allergy[];
+  labs_latest: Lab[];
+  vitals: Vital[];
+  vaccines: Vaccine[];
+  encounters: Encounter[];
+  care_gaps: CareGap[];
+  generated_at: string;
+}
+
+export const getVisitPrepExport = () => api.get<VisitPrepExport>('/export/visit-prep').then(r => r.data);
+export const getHandoffExport = () => api.get<HandoffExport>('/export/handoff').then(r => r.data);

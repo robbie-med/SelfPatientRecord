@@ -243,6 +243,21 @@ export function initDb() {
       citations TEXT DEFAULT '[]',
       created_at TEXT NOT NULL
     );
+    CREATE TABLE IF NOT EXISTS ai_config (
+      id TEXT PRIMARY KEY,
+      enabled INTEGER DEFAULT 0,
+      provider TEXT DEFAULT 'ppq',
+      base_url TEXT DEFAULT 'https://api.ppq.ai/v1',
+      api_key TEXT,
+      extraction_model TEXT DEFAULT 'anthropic/claude-3.5-haiku',
+      chat_model TEXT DEFAULT 'anthropic/claude-3.5-haiku',
+      updated_at TEXT NOT NULL
+    );
+    CREATE TABLE IF NOT EXISTS guideline_packs (
+      country TEXT PRIMARY KEY,
+      last_reviewed TEXT NOT NULL,
+      seeded_at TEXT NOT NULL
+    );
     CREATE TABLE IF NOT EXISTS audit_log (
       id TEXT PRIMARY KEY,
       patient_id TEXT,

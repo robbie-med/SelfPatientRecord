@@ -1,25 +1,30 @@
 # HealthBinder — To-Do
 
-## Bugs
+## 1 — Bugs (fix before new features)
 
-- [ ] **Modules toggle doesn't update UI** — Settings > Modules enable/disable buttons fire the API but the page doesn't refresh. Fix: wrap in `useMutation` with `onSuccess: () => qc.invalidateQueries({ queryKey: ['modules'] })` in `apps/web/src/pages/Settings.tsx`.
-- [ ] **Guideline seeder path** — `[seed-guidelines] Country packs directory not found, skipping.` The `__dirname`-relative path from `apps/server/src/rules/seed-guidelines.ts` to `packages/country-packs/` doesn't resolve correctly in all environments. Fix: make the path configurable via `COUNTRY_PACKS_DIR` env var, or copy JSON into `apps/server/src/data/` at build time.
+- [x] **Guideline seeder path** — Fixed: path now goes 4 levels up (`../../../../packages/country-packs`), with `COUNTRY_PACKS_DIR` env var override.
 
 ---
 
-## Missing features
+## 2 — Core usability (unlocks the primary use cases)
 
-- [ ] **Easy AI setup for non-technical users** — Currently AI requires manually editing `.env`. Add a Settings > AI page with a form to enter the API key, select provider (OpenAI / Anthropic / custom), and toggle AI on — writes to `.env` and restarts the server, or stores config in the DB. Include a guided flow explaining what AI is used for, what data is sent, and a link to [Maple Proxy](https://github.com/opensecretcloud/maple-proxy) for privacy-conscious users.
+- [x] **Vitals manual entry UI** — Labs page now has a Vitals tab: manual add form (BP, HR, weight, SpO₂, temp), trend chart (dual lines for BP), grouped list.
 
-- [ ] **Vitals manual entry UI** — Backend and DB table exist, no UI. Add a Vitals section to the Labs page with a manual add form (blood pressure, weight, heart rate, SpO2, temperature) and trend chart. The API functions `getVitals` and `createVital` already exist in `apps/web/src/api/client.ts`.
+- [x] **Visit prep export** — Settings > Data > "Print visit prep summary": active conditions, current meds, allergies, recent abnormal labs, open care gaps. Opens formatted print window.
+
+- [x] **Physician handoff export** — Settings > Data > "Print handoff summary": full problem list, all meds, labs latest per test, vitals, vaccines, encounters, care gaps.
+
+---
+
+## 3 — Data completeness
+
 - [ ] **Supplement tracking** — DB table, server routes, and a dedicated Supplements page. Track name, dose, frequency, brand, reason, start date.
+
 - [ ] **Illness episode logging** — DB table, server routes, and a page for logging acute illness episodes (symptoms, start/end dates, severity, treatments, outcome). Useful for pattern recognition and physician visits.
-- [ ] **Visit prep export** — One-click printable/downloadable summary: current meds, allergies, recent abnormal labs, open care gaps, active conditions. Format: plain text or PDF.
-- [ ] **Physician handoff export** — Structured clinical summary for sharing with a new provider. More detailed than visit prep, includes full med list, problem list, immunization record.
 
 ---
 
-## International guidelines
+## 4 — International guidelines
 
 Country packs are pure JSON — no code changes needed, just add the file. See `packages/country-packs/SCHEMA.md`.
 
@@ -37,19 +42,17 @@ Country packs are pure JSON — no code changes needed, just add the file. See `
 
 ---
 
-## Specialty modules
+## 5 — Specialty module UIs
 
-These modules are triggered algorithmically but have no dedicated UI yet.
+These modules are triggered algorithmically but have no dedicated UI yet. Each needs: new DB table(s) + server routes + a React page + nav entry + i18n keys.
 
-- [ ] **Pregnancy module** — Kick counter (with timestamp log), contraction timer, gestational age tracker, prenatal visit log
+- [ ] **Pregnancy module** — From [MyOB](https://github.com/robbie-med/MyOB): kick counter (tap + timestamp log), contraction timer (start/stop with duration + interval), gestational age / EDD tracker, prenatal visit log, BP log, weight tracker, EPDS (Edinburgh Postnatal Depression Scale — 10 questions, scored 0–30), birth plan builder (12 domains: pain management, delivery preferences, etc.), postpartum feeding log, postpartum jaundice day-by-day tracker
 - [ ] **Dialysis module** — Session log: date, duration, access site, pre/post weight, UF goal achieved, any complications
 - [ ] **Med administration log** — Per-medication dose tracking with timestamp (for PRN meds, insulin, anticoagulants)
 
-Each needs: new DB table(s) + server routes + a React page + nav entry + i18n keys.
-
 ---
 
-## Nice-to-have / future
+## 6 — Nice-to-have / future
 
 - [ ] PWA manifest + service worker for offline support
 - [ ] Docker Compose with optional Maple Proxy sidecar for AI privacy
@@ -60,3 +63,14 @@ Each needs: new DB table(s) + server routes + a React page + nav entry + i18n ke
 - [ ] Photo attachment for physical documents
 - [ ] FHIR R4 import — parse CCD/CCDA XML from patient portal exports
 - [ ] Notification/reminder system for overdue screenings (local only, no push)
+
+---
+
+## Done
+
+- [x] **AI configuration UI (DB-backed)** — `ai_config` table; Settings > AI panel with provider/model/key/toggle; no restart needed.
+- [x] **Modules toggle UI refresh** — `useMutation` + `invalidateQueries` in Settings.tsx.
+- [x] **Guideline seeder path bug** — 4-level relative path + `COUNTRY_PACKS_DIR` env var.
+- [x] **Vitals manual entry UI** — Labs page Vitals tab: add form, trend chart (dual-line BP), grouped list.
+- [x] **Visit prep export** — Settings > Data; prints formatted summary for doctor appointments.
+- [x] **Physician handoff export** — Settings > Data; prints full clinical summary for new providers.

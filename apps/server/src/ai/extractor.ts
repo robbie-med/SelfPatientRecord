@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { createAIClient, getModel } from './client.js';
+import { AIConfig, createAIClientFromConfig } from './client.js';
 
 const ExtractedConditionSchema = z.object({
   name: z.string(),
@@ -98,11 +98,11 @@ JSON schema:
   "contradictions": [{"description": string, "items": [string]}]
 }`;
 
-export async function extractFromText(text: string): Promise<ExtractionResult> {
-  const client = createAIClient();
+export async function extractFromText(text: string, config: AIConfig): Promise<ExtractionResult> {
+  const client = createAIClientFromConfig(config);
 
   const response = await client.chat.completions.create({
-    model: getModel(),
+    model: config.extractionModel,
     messages: [
       { role: 'system', content: SYSTEM_PROMPT },
       { role: 'user', content: `Extract health facts from this medical record:\n\n${text}` },

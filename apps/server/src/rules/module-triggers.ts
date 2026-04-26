@@ -29,8 +29,8 @@ function loadTriggers(): TriggerRule[] {
 }
 
 export interface PatientData {
-  conditions: Array<{ name: string; status: string }>;
-  medications: Array<{ name: string; generic_name?: string }>;
+  conditions: Array<{ name: string; status: string | null }>;
+  medications: Array<{ name: string; generic_name?: string | null }>;
   labs: Array<{ test_name: string; numeric_value?: number | null; value: string }>;
 }
 
