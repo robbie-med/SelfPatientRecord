@@ -21,7 +21,7 @@ A local-first, single-tenant personal health record. One patient, one SQLite dat
 ```bash
 # From repo root
 npm install              # install all workspace deps
-npm run dev              # server (:3001) + Vite (:5173) concurrently
+npm run dev              # server (:3104) + Vite (:3901) concurrently
 npm run build            # tsc (server) then tsc+vite build (web)
 
 # Per workspace
@@ -33,7 +33,7 @@ npm run build --workspace=apps/web     # tsc && vite build
 
 There is no test suite. Type checking (`tsc`) is the main correctness gate.
 
-Vite proxies `/api/*` → `http://localhost:3001`, so the frontend always talks to `:5173` in dev.
+Vite proxies `/api/*` → `http://127.0.0.1:3104`, so the frontend always talks to `:3901` in dev.
 
 ## Environment setup
 
@@ -41,7 +41,7 @@ Vite proxies `/api/*` → `http://localhost:3001`, so the frontend always talks 
 cp .env.example .env    # then fill in AI_API_KEY if using AI features
 ```
 
-Key env vars: `PORT` (default 3001), `DATA_DIR` (default `./data`), `AI_ENABLED`, `AI_API_KEY`, `AI_BASE_URL`, `AI_MODEL`.
+Key env vars: `PORT` (default 3104), `DATA_DIR` (default `./data`), `AI_ENABLED`, `AI_API_KEY`, `AI_BASE_URL`, `AI_MODEL`.
 
 ## Non-negotiable invariants
 
@@ -92,8 +92,7 @@ User pastes raw text → `POST /api/documents` → AI extracts typed JSON → st
 
 ## Known issues (fix before adding features)
 
-- Modules enable/disable button doesn't refresh — missing `queryClient.invalidateQueries` after mutation in `apps/web/src/pages/Settings.tsx`
-- Guideline seeder path fails when `__dirname` doesn't resolve correctly in some environments — `[seed-guidelines] Country packs directory not found, skipping.`
+- (none currently — modules refresh and seeder path issues are fixed; server binds 127.0.0.1:3104 per /home/user/Projects/PORTS.md)
 
 ## What NOT to do
 

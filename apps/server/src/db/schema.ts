@@ -35,6 +35,7 @@ export const documents = sqliteTable('documents', {
   provider: text('provider'),
   extraction_status: text('extraction_status').default('pending'),
   created_at: text('created_at').notNull().$defaultFn(now),
+  deleted_at: text('deleted_at'),
 });
 
 export const extracted_facts = sqliteTable('extracted_facts', {
@@ -61,6 +62,7 @@ export const conditions = sqliteTable('conditions', {
   user_confirmed: integer('user_confirmed', { mode: 'boolean' }).default(true),
   created_at: text('created_at').notNull().$defaultFn(now),
   updated_at: text('updated_at').notNull().$defaultFn(now),
+  deleted_at: text('deleted_at'),
 });
 
 export const medications = sqliteTable('medications', {
@@ -83,6 +85,7 @@ export const medications = sqliteTable('medications', {
   user_confirmed: integer('user_confirmed', { mode: 'boolean' }).default(true),
   created_at: text('created_at').notNull().$defaultFn(now),
   updated_at: text('updated_at').notNull().$defaultFn(now),
+  deleted_at: text('deleted_at'),
 });
 
 export const labs = sqliteTable('labs', {
@@ -102,6 +105,7 @@ export const labs = sqliteTable('labs', {
   source_quote: text('source_quote'),
   user_confirmed: integer('user_confirmed', { mode: 'boolean' }).default(true),
   created_at: text('created_at').notNull().$defaultFn(now),
+  deleted_at: text('deleted_at'),
 });
 
 export const vitals = sqliteTable('vitals', {
@@ -115,6 +119,7 @@ export const vitals = sqliteTable('vitals', {
   source_document_id: text('source_document_id'),
   user_confirmed: integer('user_confirmed', { mode: 'boolean' }).default(true),
   created_at: text('created_at').notNull().$defaultFn(now),
+  deleted_at: text('deleted_at'),
 });
 
 export const allergies = sqliteTable('allergies', {
@@ -130,6 +135,7 @@ export const allergies = sqliteTable('allergies', {
   source_quote: text('source_quote'),
   user_confirmed: integer('user_confirmed', { mode: 'boolean' }).default(true),
   created_at: text('created_at').notNull().$defaultFn(now),
+  deleted_at: text('deleted_at'),
 });
 
 export const vaccines = sqliteTable('vaccines', {
@@ -145,6 +151,7 @@ export const vaccines = sqliteTable('vaccines', {
   source_document_id: text('source_document_id'),
   user_confirmed: integer('user_confirmed', { mode: 'boolean' }).default(true),
   created_at: text('created_at').notNull().$defaultFn(now),
+  deleted_at: text('deleted_at'),
 });
 
 export const encounters = sqliteTable('encounters', {
@@ -161,6 +168,7 @@ export const encounters = sqliteTable('encounters', {
   source_document_id: text('source_document_id'),
   user_confirmed: integer('user_confirmed', { mode: 'boolean' }).default(true),
   created_at: text('created_at').notNull().$defaultFn(now),
+  deleted_at: text('deleted_at'),
 });
 
 export const imaging_reports = sqliteTable('imaging_reports', {
@@ -179,6 +187,7 @@ export const imaging_reports = sqliteTable('imaging_reports', {
   source_quote: text('source_quote'),
   user_confirmed: integer('user_confirmed', { mode: 'boolean' }).default(true),
   created_at: text('created_at').notNull().$defaultFn(now),
+  deleted_at: text('deleted_at'),
 });
 
 export const module_status = sqliteTable('module_status', {
@@ -222,6 +231,13 @@ export const guideline_recommendations = sqliteTable('guideline_recommendations'
   version_date: text('version_date'),
   is_active: integer('is_active', { mode: 'boolean' }).default(true),
   created_at: text('created_at').notNull().$defaultFn(now),
+  title_native: text('title_native'),
+  recommendation_text_native: text('recommendation_text_native'),
+  patient_facing_summary_native: text('patient_facing_summary_native'),
+  native_language: text('native_language'),
+  prevention_category: text('prevention_category'),
+  recommendation_polarity: text('recommendation_polarity').default('for'),
+  source_file: text('source_file'),
 });
 
 export const care_gaps = sqliteTable('care_gaps', {
@@ -235,6 +251,7 @@ export const care_gaps = sqliteTable('care_gaps', {
   status: text('status').default('open'),
   detected_at: text('detected_at').notNull().$defaultFn(now),
   resolved_at: text('resolved_at'),
+  prevention_category: text('prevention_category'),
 });
 
 export const chat_messages = sqliteTable('chat_messages', {
@@ -277,5 +294,449 @@ export const audit_log = sqliteTable('audit_log', {
   entity_id: text('entity_id'),
   details: text('details'),
   ai_involved: integer('ai_involved', { mode: 'boolean' }).default(false),
+  diff_json: text('diff_json'),
   created_at: text('created_at').notNull().$defaultFn(now),
+});
+
+export const reminders = sqliteTable('reminders', {
+  id: text('id').primaryKey(),
+  patient_id: text('patient_id').notNull().references(() => patients.id),
+  kind: text('kind').notNull(),
+  title: text('title').notNull(),
+  body: text('body'),
+  target_entity_type: text('target_entity_type'),
+  target_entity_id: text('target_entity_id'),
+  prevention_category: text('prevention_category'),
+  due_at: text('due_at'),
+  snoozed_until: text('snoozed_until'),
+  dismissed_at: text('dismissed_at'),
+  completed_at: text('completed_at'),
+  payload_json: text('payload_json').default('{}'),
+  created_at: text('created_at').notNull().$defaultFn(now),
+  updated_at: text('updated_at').notNull().$defaultFn(now),
+});
+
+// ── Workstream B — discrete clinical tools ──────────────────────────────────
+
+export const supplements = sqliteTable('supplements', {
+  id: text('id').primaryKey(),
+  patient_id: text('patient_id').notNull().references(() => patients.id),
+  name: text('name').notNull(),
+  dose: text('dose'),
+  unit: text('unit'),
+  frequency: text('frequency'),
+  brand: text('brand'),
+  reason: text('reason'),
+  start_date: text('start_date'),
+  end_date: text('end_date'),
+  status: text('status').default('current'),
+  notes: text('notes'),
+  source_document_id: text('source_document_id'),
+  source_quote: text('source_quote'),
+  user_confirmed: integer('user_confirmed', { mode: 'boolean' }).default(true),
+  created_at: text('created_at').notNull().$defaultFn(now),
+  updated_at: text('updated_at').notNull().$defaultFn(now),
+  deleted_at: text('deleted_at'),
+});
+
+export const illness_episodes = sqliteTable('illness_episodes', {
+  id: text('id').primaryKey(),
+  patient_id: text('patient_id').notNull().references(() => patients.id),
+  title: text('title').notNull(),
+  symptoms_json: text('symptoms_json').default('[]'),
+  onset_date: text('onset_date'),
+  end_date: text('end_date'),
+  severity: text('severity'),
+  treatments: text('treatments'),
+  outcome: text('outcome'),
+  notes: text('notes'),
+  source_document_id: text('source_document_id'),
+  user_confirmed: integer('user_confirmed', { mode: 'boolean' }).default(true),
+  created_at: text('created_at').notNull().$defaultFn(now),
+  updated_at: text('updated_at').notNull().$defaultFn(now),
+  deleted_at: text('deleted_at'),
+});
+
+export const med_admin_log = sqliteTable('med_admin_log', {
+  id: text('id').primaryKey(),
+  patient_id: text('patient_id').notNull().references(() => patients.id),
+  medication_id: text('medication_id').references(() => medications.id),
+  medication_name: text('medication_name').notNull(),
+  administered_at: text('administered_at').notNull(),
+  dose_given: text('dose_given'),
+  route: text('route'),
+  note: text('note'),
+  created_at: text('created_at').notNull().$defaultFn(now),
+  deleted_at: text('deleted_at'),
+});
+
+export const attachments = sqliteTable('attachments', {
+  id: text('id').primaryKey(),
+  patient_id: text('patient_id').notNull().references(() => patients.id),
+  entity_type: text('entity_type'),
+  entity_id: text('entity_id'),
+  mime_type: text('mime_type').notNull(),
+  filename: text('filename').notNull(),
+  file_path: text('file_path').notNull(),
+  thumbnail_path: text('thumbnail_path'),
+  size_bytes: integer('size_bytes'),
+  width: integer('width'),
+  height: integer('height'),
+  taken_at: text('taken_at'),
+  caption: text('caption'),
+  created_at: text('created_at').notNull().$defaultFn(now),
+  deleted_at: text('deleted_at'),
+});
+
+export const kick_sessions = sqliteTable('kick_sessions', {
+  id: text('id').primaryKey(),
+  patient_id: text('patient_id').notNull().references(() => patients.id),
+  started_at: text('started_at').notNull(),
+  ended_at: text('ended_at'),
+  count: integer('count').default(0),
+  notes: text('notes'),
+  created_at: text('created_at').notNull().$defaultFn(now),
+  deleted_at: text('deleted_at'),
+});
+
+export const contractions = sqliteTable('contractions', {
+  id: text('id').primaryKey(),
+  patient_id: text('patient_id').notNull().references(() => patients.id),
+  started_at: text('started_at').notNull(),
+  ended_at: text('ended_at'),
+  intensity: text('intensity'),
+  notes: text('notes'),
+  created_at: text('created_at').notNull().$defaultFn(now),
+  deleted_at: text('deleted_at'),
+});
+
+export const pregnancies = sqliteTable('pregnancies', {
+  id: text('id').primaryKey(),
+  patient_id: text('patient_id').notNull().references(() => patients.id),
+  lmp_date: text('lmp_date'),
+  edd: text('edd'),
+  conception_method: text('conception_method'),
+  status: text('status').default('active'),
+  outcome: text('outcome'),
+  outcome_date: text('outcome_date'),
+  notes: text('notes'),
+  created_at: text('created_at').notNull().$defaultFn(now),
+  updated_at: text('updated_at').notNull().$defaultFn(now),
+  deleted_at: text('deleted_at'),
+});
+
+export const screening_responses = sqliteTable('screening_responses', {
+  id: text('id').primaryKey(),
+  patient_id: text('patient_id').notNull().references(() => patients.id),
+  instrument: text('instrument').notNull(),
+  responses_json: text('responses_json').default('[]'),
+  total_score: real('total_score'),
+  interpretation: text('interpretation'),
+  completed_at: text('completed_at').notNull(),
+  notes: text('notes'),
+  created_at: text('created_at').notNull().$defaultFn(now),
+  deleted_at: text('deleted_at'),
+});
+
+export const birth_plans = sqliteTable('birth_plans', {
+  id: text('id').primaryKey(),
+  patient_id: text('patient_id').notNull().references(() => patients.id),
+  title: text('title').default('Birth Plan'),
+  plan_json: text('plan_json').notNull().default('{}'),
+  finalized_at: text('finalized_at'),
+  created_at: text('created_at').notNull().$defaultFn(now),
+  updated_at: text('updated_at').notNull().$defaultFn(now),
+  deleted_at: text('deleted_at'),
+});
+
+export const feeding_events = sqliteTable('feeding_events', {
+  id: text('id').primaryKey(),
+  patient_id: text('patient_id').notNull().references(() => patients.id),
+  started_at: text('started_at').notNull(),
+  ended_at: text('ended_at'),
+  side: text('side'),
+  volume_ml: real('volume_ml'),
+  kind: text('kind').default('breast'),
+  notes: text('notes'),
+  created_at: text('created_at').notNull().$defaultFn(now),
+  deleted_at: text('deleted_at'),
+});
+
+export const jaundice_observations = sqliteTable('jaundice_observations', {
+  id: text('id').primaryKey(),
+  patient_id: text('patient_id').notNull().references(() => patients.id),
+  infant_dob: text('infant_dob').notNull(),
+  observed_at: text('observed_at').notNull(),
+  day_of_life: integer('day_of_life'),
+  area_affected: text('area_affected'),
+  notes: text('notes'),
+  photo_attachment_id: text('photo_attachment_id'),
+  created_at: text('created_at').notNull().$defaultFn(now),
+  deleted_at: text('deleted_at'),
+});
+
+export const dialysis_sessions = sqliteTable('dialysis_sessions', {
+  id: text('id').primaryKey(),
+  patient_id: text('patient_id').notNull().references(() => patients.id),
+  session_date: text('session_date').notNull(),
+  duration_min: integer('duration_min'),
+  access_site: text('access_site'),
+  pre_weight: real('pre_weight'),
+  post_weight: real('post_weight'),
+  uf_goal: real('uf_goal'),
+  uf_achieved: real('uf_achieved'),
+  complications_text: text('complications_text'),
+  notes: text('notes'),
+  created_at: text('created_at').notNull().$defaultFn(now),
+  deleted_at: text('deleted_at'),
+});
+
+export const surgeries = sqliteTable('surgeries', {
+  id: text('id').primaryKey(),
+  patient_id: text('patient_id').notNull().references(() => patients.id),
+  name: text('name').notNull(),
+  surgery_date: text('surgery_date'),
+  surgeon: text('surgeon'),
+  facility: text('facility'),
+  indication: text('indication'),
+  approach: text('approach'),
+  complications_text: text('complications_text'),
+  recovery_notes: text('recovery_notes'),
+  related_condition_id: text('related_condition_id'),
+  source_document_id: text('source_document_id'),
+  created_at: text('created_at').notNull().$defaultFn(now),
+  updated_at: text('updated_at').notNull().$defaultFn(now),
+  deleted_at: text('deleted_at'),
+});
+
+export const implants = sqliteTable('implants', {
+  id: text('id').primaryKey(),
+  patient_id: text('patient_id').notNull().references(() => patients.id),
+  kind: text('kind').notNull(),
+  name: text('name').notNull(),
+  body_site: text('body_site'),
+  laterality: text('laterality'),
+  manufacturer: text('manufacturer'),
+  model: text('model'),
+  serial: text('serial'),
+  lot: text('lot'),
+  placed_date: text('placed_date'),
+  removed_date: text('removed_date'),
+  removal_reason: text('removal_reason'),
+  mri_safety: text('mri_safety'),
+  photo_attachment_id: text('photo_attachment_id'),
+  notes: text('notes'),
+  created_at: text('created_at').notNull().$defaultFn(now),
+  updated_at: text('updated_at').notNull().$defaultFn(now),
+  deleted_at: text('deleted_at'),
+});
+
+export const equipment = sqliteTable('equipment', {
+  id: text('id').primaryKey(),
+  patient_id: text('patient_id').notNull().references(() => patients.id),
+  kind: text('kind').notNull(),
+  brand: text('brand'),
+  model: text('model'),
+  serial: text('serial'),
+  acquired_date: text('acquired_date'),
+  retired_date: text('retired_date'),
+  last_serviced_date: text('last_serviced_date'),
+  notes: text('notes'),
+  created_at: text('created_at').notNull().$defaultFn(now),
+  updated_at: text('updated_at').notNull().$defaultFn(now),
+  deleted_at: text('deleted_at'),
+});
+
+export const sensitivities = sqliteTable('sensitivities', {
+  id: text('id').primaryKey(),
+  patient_id: text('patient_id').notNull().references(() => patients.id),
+  substance: text('substance').notNull(),
+  kind: text('kind').default('food'),
+  reaction: text('reaction'),
+  severity: text('severity'),
+  onset_date: text('onset_date'),
+  confirmed_by: text('confirmed_by'),
+  notes: text('notes'),
+  created_at: text('created_at').notNull().$defaultFn(now),
+  updated_at: text('updated_at').notNull().$defaultFn(now),
+  deleted_at: text('deleted_at'),
+});
+
+export const sex_events = sqliteTable('sex_events', {
+  id: text('id').primaryKey(),
+  patient_id: text('patient_id').notNull().references(() => patients.id),
+  occurred_at: text('occurred_at').notNull(),
+  kind: text('kind'),
+  partner_type: text('partner_type'),
+  protection: text('protection'),
+  pregnancy_risk: text('pregnancy_risk'),
+  notes: text('notes'),
+  created_at: text('created_at').notNull().$defaultFn(now),
+  deleted_at: text('deleted_at'),
+});
+
+export const pregnancy_outcomes = sqliteTable('pregnancy_outcomes', {
+  id: text('id').primaryKey(),
+  patient_id: text('patient_id').notNull().references(() => patients.id),
+  pregnancy_id: text('pregnancy_id'),
+  conception_date_est: text('conception_date_est'),
+  outcome: text('outcome').notNull(),
+  outcome_date: text('outcome_date').notNull(),
+  gestational_age_at_outcome: text('gestational_age_at_outcome'),
+  treatment: text('treatment'),
+  hcg_followup_json: text('hcg_followup_json').default('[]'),
+  emotional_notes: text('emotional_notes'),
+  future_planning_notes: text('future_planning_notes'),
+  created_at: text('created_at').notNull().$defaultFn(now),
+  updated_at: text('updated_at').notNull().$defaultFn(now),
+  deleted_at: text('deleted_at'),
+});
+
+export const ultrasounds = sqliteTable('ultrasounds', {
+  id: text('id').primaryKey(),
+  patient_id: text('patient_id').notNull().references(() => patients.id),
+  performed_at: text('performed_at').notNull(),
+  organ_or_site: text('organ_or_site').notNull(),
+  indication: text('indication'),
+  findings: text('findings'),
+  dimensions_json: text('dimensions_json').default('{}'),
+  sonographer: text('sonographer'),
+  facility: text('facility'),
+  related_imaging_report_id: text('related_imaging_report_id'),
+  photo_attachment_id: text('photo_attachment_id'),
+  created_at: text('created_at').notNull().$defaultFn(now),
+  updated_at: text('updated_at').notNull().$defaultFn(now),
+  deleted_at: text('deleted_at'),
+});
+
+export const micronutrients = sqliteTable('micronutrients', {
+  id: text('id').primaryKey(),
+  patient_id: text('patient_id').notNull().references(() => patients.id),
+  nutrient: text('nutrient').notNull(),
+  value: real('value').notNull(),
+  unit: text('unit'),
+  measured_at: text('measured_at').notNull(),
+  lab_source: text('lab_source'),
+  ref_low: real('ref_low'),
+  ref_high: real('ref_high'),
+  optimal_low: real('optimal_low'),
+  optimal_high: real('optimal_high'),
+  supplementation_active: integer('supplementation_active', { mode: 'boolean' }).default(false),
+  source_lab_id: text('source_lab_id'),
+  notes: text('notes'),
+  created_at: text('created_at').notNull().$defaultFn(now),
+  deleted_at: text('deleted_at'),
+});
+
+export const access_devices = sqliteTable('access_devices', {
+  id: text('id').primaryKey(),
+  patient_id: text('patient_id').notNull().references(() => patients.id),
+  kind: text('kind').notNull(),
+  subtype: text('subtype'),
+  anatomical_site: text('anatomical_site'),
+  laterality: text('laterality'),
+  placed_at: text('placed_at'),
+  placed_by: text('placed_by'),
+  placed_facility: text('placed_facility'),
+  indication: text('indication'),
+  gauge_or_size: text('gauge_or_size'),
+  lumens: integer('lumens'),
+  removed_at: text('removed_at'),
+  removal_reason: text('removal_reason'),
+  complications_text: text('complications_text'),
+  dressing_change_interval_days: integer('dressing_change_interval_days'),
+  last_dressing_change_at: text('last_dressing_change_at'),
+  line_care_notes_markdown: text('line_care_notes_markdown'),
+  photo_attachment_id: text('photo_attachment_id'),
+  related_condition_id: text('related_condition_id'),
+  created_at: text('created_at').notNull().$defaultFn(now),
+  updated_at: text('updated_at').notNull().$defaultFn(now),
+  deleted_at: text('deleted_at'),
+});
+
+export const cycles = sqliteTable('cycles', {
+  id: text('id').primaryKey(),
+  patient_id: text('patient_id').notNull().references(() => patients.id),
+  started_at: text('started_at').notNull(),
+  ended_at: text('ended_at'),
+  notes: text('notes'),
+  created_at: text('created_at').notNull().$defaultFn(now),
+  updated_at: text('updated_at').notNull().$defaultFn(now),
+  deleted_at: text('deleted_at'),
+});
+
+export const cycle_days = sqliteTable('cycle_days', {
+  id: text('id').primaryKey(),
+  cycle_id: text('cycle_id').notNull().references(() => cycles.id),
+  patient_id: text('patient_id').notNull().references(() => patients.id),
+  day_of_cycle: integer('day_of_cycle').notNull(),
+  date: text('date').notNull(),
+  bbt: real('bbt'),
+  cervical_mucus_kind: text('cervical_mucus_kind'),
+  cervical_position: text('cervical_position'),
+  bleeding_kind: text('bleeding_kind'),
+  bleeding_amount: text('bleeding_amount'),
+  ovulation_pain: integer('ovulation_pain', { mode: 'boolean' }).default(false),
+  intercourse: integer('intercourse', { mode: 'boolean' }).default(false),
+  notes: text('notes'),
+  created_at: text('created_at').notNull().$defaultFn(now),
+  updated_at: text('updated_at').notNull().$defaultFn(now),
+});
+
+export const lh_tests = sqliteTable('lh_tests', {
+  id: text('id').primaryKey(),
+  patient_id: text('patient_id').notNull().references(() => patients.id),
+  cycle_id: text('cycle_id'),
+  taken_at: text('taken_at').notNull(),
+  result: text('result'),
+  intensity: integer('intensity'),
+  brand: text('brand'),
+  photo_attachment_id: text('photo_attachment_id'),
+  notes: text('notes'),
+  created_at: text('created_at').notNull().$defaultFn(now),
+  deleted_at: text('deleted_at'),
+});
+
+export const pregnancy_tests = sqliteTable('pregnancy_tests', {
+  id: text('id').primaryKey(),
+  patient_id: text('patient_id').notNull().references(() => patients.id),
+  taken_at: text('taken_at').notNull(),
+  result: text('result'),
+  kind: text('kind'),
+  photo_attachment_id: text('photo_attachment_id'),
+  follow_up_hcg_quantitative: real('follow_up_hcg_quantitative'),
+  notes: text('notes'),
+  created_at: text('created_at').notNull().$defaultFn(now),
+  deleted_at: text('deleted_at'),
+});
+
+export const mood_entries = sqliteTable('mood_entries', {
+  id: text('id').primaryKey(),
+  patient_id: text('patient_id').notNull().references(() => patients.id),
+  logged_at: text('logged_at').notNull(),
+  mood_score: integer('mood_score'),
+  energy_score: integer('energy_score'),
+  anxiety_score: integer('anxiety_score'),
+  irritability_score: integer('irritability_score'),
+  tags_json: text('tags_json').default('[]'),
+  notes_markdown: text('notes_markdown'),
+  created_at: text('created_at').notNull().$defaultFn(now),
+  deleted_at: text('deleted_at'),
+});
+
+export const experiments = sqliteTable('experiments', {
+  id: text('id').primaryKey(),
+  patient_id: text('patient_id').notNull().references(() => patients.id),
+  hypothesis: text('hypothesis').notNull(),
+  started_at: text('started_at'),
+  ended_at: text('ended_at'),
+  baseline_period_days: integer('baseline_period_days'),
+  intervention_period_days: integer('intervention_period_days'),
+  intervention_description: text('intervention_description'),
+  target_metrics_json: text('target_metrics_json').default('[]'),
+  status: text('status').default('planned'),
+  conclusion_markdown: text('conclusion_markdown'),
+  created_at: text('created_at').notNull().$defaultFn(now),
+  updated_at: text('updated_at').notNull().$defaultFn(now),
+  deleted_at: text('deleted_at'),
 });

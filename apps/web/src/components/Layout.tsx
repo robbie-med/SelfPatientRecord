@@ -10,6 +10,11 @@ const NAV_ITEMS = [
   { to: '/imaging', icon: '🩻', key: 'nav.imaging' },
   { to: '/meds', icon: '💊', key: 'nav.meds' },
   { to: '/prevention', icon: '🛡️', key: 'nav.prevention' },
+  { to: '/supplements', icon: '🌿', key: 'nav.supplements' },
+  { to: '/illness', icon: '🤒', key: 'nav.illness' },
+  { to: '/med-log', icon: '📋', key: 'nav.medLog' },
+  { to: '/attachments', icon: '📎', key: 'nav.attachments' },
+  { to: '/reminders', icon: '🔔', key: 'nav.reminders' },
   { to: '/ask', icon: '💬', key: 'nav.ask' },
   { to: '/settings', icon: '⚙️', key: 'nav.settings' },
 ];

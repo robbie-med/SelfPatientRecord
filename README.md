@@ -53,14 +53,14 @@ cp .env.example .env
 npm run dev
 ```
 
-- Web app: http://localhost:5173
-- API server: http://localhost:3001
+- Web app: http://localhost:3901
+- API server: http://127.0.0.1:3104
 
 ### Environment variables (`.env`)
 
 | Variable | Default | Description |
 |---|---|---|
-| `PORT` | `3001` | API server port |
+| `PORT` | `3104` | API server port |
 | `AI_ENABLED` | `false` | Set `true` to enable AI features |
 | `AI_API_KEY` | — | Your OpenAI (or compatible) API key |
 | `AI_BASE_URL` | `https://api.openai.com/v1` | API endpoint — point to [Maple Proxy](https://github.com/opensecretcloud/maple-proxy) for privacy |
@@ -76,7 +76,7 @@ AI is off by default. All core features (manual entry, lab charts, imaging expla
 1. Open the repo on GitHub → **Code** → **Codespaces** → **Create codespace**
 2. Wait for `npm install` to finish (~1 min)
 3. In the terminal: `npm run dev`
-4. Codespaces auto-opens a browser on port 5173
+4. Codespaces auto-opens a browser on port 3901
 
 ---
 
@@ -84,7 +84,7 @@ AI is off by default. All core features (manual entry, lab charts, imaging expla
 
 ```bash
 docker build -t healthbinder .
-docker run -p 3001:3001 -v $(pwd)/data:/app/data --env-file .env healthbinder
+docker run -p 3104:3104 -v $(pwd)/data:/app/data --env-file .env healthbinder
 ```
 
 ---

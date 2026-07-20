@@ -268,5 +268,312 @@ export function initDb() {
       ai_involved INTEGER DEFAULT 0,
       created_at TEXT NOT NULL
     );
+    CREATE TABLE IF NOT EXISTS reminders (
+      id TEXT PRIMARY KEY,
+      patient_id TEXT NOT NULL REFERENCES patients(id),
+      kind TEXT NOT NULL,
+      title TEXT NOT NULL,
+      body TEXT,
+      target_entity_type TEXT,
+      target_entity_id TEXT,
+      prevention_category TEXT,
+      due_at TEXT,
+      snoozed_until TEXT,
+      dismissed_at TEXT,
+      completed_at TEXT,
+      payload_json TEXT DEFAULT '{}',
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+    CREATE TABLE IF NOT EXISTS supplements (
+      id TEXT PRIMARY KEY,
+      patient_id TEXT NOT NULL REFERENCES patients(id),
+      name TEXT NOT NULL,
+      dose TEXT, unit TEXT, frequency TEXT, brand TEXT, reason TEXT,
+      start_date TEXT, end_date TEXT,
+      status TEXT DEFAULT 'current',
+      notes TEXT,
+      source_document_id TEXT, source_quote TEXT,
+      user_confirmed INTEGER DEFAULT 1,
+      created_at TEXT NOT NULL, updated_at TEXT NOT NULL,
+      deleted_at TEXT
+    );
+    CREATE TABLE IF NOT EXISTS illness_episodes (
+      id TEXT PRIMARY KEY,
+      patient_id TEXT NOT NULL REFERENCES patients(id),
+      title TEXT NOT NULL,
+      symptoms_json TEXT DEFAULT '[]',
+      onset_date TEXT, end_date TEXT,
+      severity TEXT, treatments TEXT, outcome TEXT, notes TEXT,
+      source_document_id TEXT,
+      user_confirmed INTEGER DEFAULT 1,
+      created_at TEXT NOT NULL, updated_at TEXT NOT NULL,
+      deleted_at TEXT
+    );
+    CREATE TABLE IF NOT EXISTS med_admin_log (
+      id TEXT PRIMARY KEY,
+      patient_id TEXT NOT NULL REFERENCES patients(id),
+      medication_id TEXT REFERENCES medications(id),
+      medication_name TEXT NOT NULL,
+      administered_at TEXT NOT NULL,
+      dose_given TEXT, route TEXT, note TEXT,
+      created_at TEXT NOT NULL,
+      deleted_at TEXT
+    );
+    CREATE TABLE IF NOT EXISTS attachments (
+      id TEXT PRIMARY KEY,
+      patient_id TEXT NOT NULL REFERENCES patients(id),
+      entity_type TEXT, entity_id TEXT,
+      mime_type TEXT NOT NULL, filename TEXT NOT NULL, file_path TEXT NOT NULL,
+      thumbnail_path TEXT,
+      size_bytes INTEGER, width INTEGER, height INTEGER,
+      taken_at TEXT, caption TEXT,
+      created_at TEXT NOT NULL,
+      deleted_at TEXT
+    );
+    CREATE TABLE IF NOT EXISTS kick_sessions (
+      id TEXT PRIMARY KEY,
+      patient_id TEXT NOT NULL REFERENCES patients(id),
+      started_at TEXT NOT NULL, ended_at TEXT,
+      count INTEGER DEFAULT 0, notes TEXT,
+      created_at TEXT NOT NULL, deleted_at TEXT
+    );
+    CREATE TABLE IF NOT EXISTS contractions (
+      id TEXT PRIMARY KEY,
+      patient_id TEXT NOT NULL REFERENCES patients(id),
+      started_at TEXT NOT NULL, ended_at TEXT,
+      intensity TEXT, notes TEXT,
+      created_at TEXT NOT NULL, deleted_at TEXT
+    );
+    CREATE TABLE IF NOT EXISTS pregnancies (
+      id TEXT PRIMARY KEY,
+      patient_id TEXT NOT NULL REFERENCES patients(id),
+      lmp_date TEXT, edd TEXT, conception_method TEXT,
+      status TEXT DEFAULT 'active',
+      outcome TEXT, outcome_date TEXT, notes TEXT,
+      created_at TEXT NOT NULL, updated_at TEXT NOT NULL, deleted_at TEXT
+    );
+    CREATE TABLE IF NOT EXISTS screening_responses (
+      id TEXT PRIMARY KEY,
+      patient_id TEXT NOT NULL REFERENCES patients(id),
+      instrument TEXT NOT NULL,
+      responses_json TEXT DEFAULT '[]',
+      total_score REAL, interpretation TEXT,
+      completed_at TEXT NOT NULL, notes TEXT,
+      created_at TEXT NOT NULL, deleted_at TEXT
+    );
+    CREATE TABLE IF NOT EXISTS birth_plans (
+      id TEXT PRIMARY KEY,
+      patient_id TEXT NOT NULL REFERENCES patients(id),
+      title TEXT DEFAULT 'Birth Plan',
+      plan_json TEXT NOT NULL DEFAULT '{}',
+      finalized_at TEXT,
+      created_at TEXT NOT NULL, updated_at TEXT NOT NULL, deleted_at TEXT
+    );
+    CREATE TABLE IF NOT EXISTS feeding_events (
+      id TEXT PRIMARY KEY,
+      patient_id TEXT NOT NULL REFERENCES patients(id),
+      started_at TEXT NOT NULL, ended_at TEXT,
+      side TEXT, volume_ml REAL,
+      kind TEXT DEFAULT 'breast', notes TEXT,
+      created_at TEXT NOT NULL, deleted_at TEXT
+    );
+    CREATE TABLE IF NOT EXISTS jaundice_observations (
+      id TEXT PRIMARY KEY,
+      patient_id TEXT NOT NULL REFERENCES patients(id),
+      infant_dob TEXT NOT NULL, observed_at TEXT NOT NULL,
+      day_of_life INTEGER, area_affected TEXT, notes TEXT,
+      photo_attachment_id TEXT,
+      created_at TEXT NOT NULL, deleted_at TEXT
+    );
+    CREATE TABLE IF NOT EXISTS dialysis_sessions (
+      id TEXT PRIMARY KEY,
+      patient_id TEXT NOT NULL REFERENCES patients(id),
+      session_date TEXT NOT NULL,
+      duration_min INTEGER, access_site TEXT,
+      pre_weight REAL, post_weight REAL, uf_goal REAL, uf_achieved REAL,
+      complications_text TEXT, notes TEXT,
+      created_at TEXT NOT NULL, deleted_at TEXT
+    );
+    CREATE TABLE IF NOT EXISTS surgeries (
+      id TEXT PRIMARY KEY,
+      patient_id TEXT NOT NULL REFERENCES patients(id),
+      name TEXT NOT NULL, surgery_date TEXT,
+      surgeon TEXT, facility TEXT, indication TEXT, approach TEXT,
+      complications_text TEXT, recovery_notes TEXT,
+      related_condition_id TEXT, source_document_id TEXT,
+      created_at TEXT NOT NULL, updated_at TEXT NOT NULL, deleted_at TEXT
+    );
+    CREATE TABLE IF NOT EXISTS implants (
+      id TEXT PRIMARY KEY,
+      patient_id TEXT NOT NULL REFERENCES patients(id),
+      kind TEXT NOT NULL, name TEXT NOT NULL,
+      body_site TEXT, laterality TEXT,
+      manufacturer TEXT, model TEXT, serial TEXT, lot TEXT,
+      placed_date TEXT, removed_date TEXT, removal_reason TEXT,
+      mri_safety TEXT, photo_attachment_id TEXT, notes TEXT,
+      created_at TEXT NOT NULL, updated_at TEXT NOT NULL, deleted_at TEXT
+    );
+    CREATE TABLE IF NOT EXISTS equipment (
+      id TEXT PRIMARY KEY,
+      patient_id TEXT NOT NULL REFERENCES patients(id),
+      kind TEXT NOT NULL,
+      brand TEXT, model TEXT, serial TEXT,
+      acquired_date TEXT, retired_date TEXT, last_serviced_date TEXT,
+      notes TEXT,
+      created_at TEXT NOT NULL, updated_at TEXT NOT NULL, deleted_at TEXT
+    );
+    CREATE TABLE IF NOT EXISTS sensitivities (
+      id TEXT PRIMARY KEY,
+      patient_id TEXT NOT NULL REFERENCES patients(id),
+      substance TEXT NOT NULL,
+      kind TEXT DEFAULT 'food',
+      reaction TEXT, severity TEXT, onset_date TEXT,
+      confirmed_by TEXT, notes TEXT,
+      created_at TEXT NOT NULL, updated_at TEXT NOT NULL, deleted_at TEXT
+    );
+    CREATE TABLE IF NOT EXISTS sex_events (
+      id TEXT PRIMARY KEY,
+      patient_id TEXT NOT NULL REFERENCES patients(id),
+      occurred_at TEXT NOT NULL,
+      kind TEXT, partner_type TEXT, protection TEXT,
+      pregnancy_risk TEXT, notes TEXT,
+      created_at TEXT NOT NULL, deleted_at TEXT
+    );
+    CREATE TABLE IF NOT EXISTS pregnancy_outcomes (
+      id TEXT PRIMARY KEY,
+      patient_id TEXT NOT NULL REFERENCES patients(id),
+      pregnancy_id TEXT,
+      conception_date_est TEXT,
+      outcome TEXT NOT NULL, outcome_date TEXT NOT NULL,
+      gestational_age_at_outcome TEXT,
+      treatment TEXT,
+      hcg_followup_json TEXT DEFAULT '[]',
+      emotional_notes TEXT, future_planning_notes TEXT,
+      created_at TEXT NOT NULL, updated_at TEXT NOT NULL, deleted_at TEXT
+    );
+    CREATE TABLE IF NOT EXISTS ultrasounds (
+      id TEXT PRIMARY KEY,
+      patient_id TEXT NOT NULL REFERENCES patients(id),
+      performed_at TEXT NOT NULL,
+      organ_or_site TEXT NOT NULL,
+      indication TEXT, findings TEXT,
+      dimensions_json TEXT DEFAULT '{}',
+      sonographer TEXT, facility TEXT,
+      related_imaging_report_id TEXT, photo_attachment_id TEXT,
+      created_at TEXT NOT NULL, updated_at TEXT NOT NULL, deleted_at TEXT
+    );
+    CREATE TABLE IF NOT EXISTS micronutrients (
+      id TEXT PRIMARY KEY,
+      patient_id TEXT NOT NULL REFERENCES patients(id),
+      nutrient TEXT NOT NULL,
+      value REAL NOT NULL, unit TEXT,
+      measured_at TEXT NOT NULL,
+      lab_source TEXT,
+      ref_low REAL, ref_high REAL, optimal_low REAL, optimal_high REAL,
+      supplementation_active INTEGER DEFAULT 0,
+      source_lab_id TEXT, notes TEXT,
+      created_at TEXT NOT NULL, deleted_at TEXT
+    );
+    CREATE TABLE IF NOT EXISTS access_devices (
+      id TEXT PRIMARY KEY,
+      patient_id TEXT NOT NULL REFERENCES patients(id),
+      kind TEXT NOT NULL,
+      subtype TEXT, anatomical_site TEXT, laterality TEXT,
+      placed_at TEXT, placed_by TEXT, placed_facility TEXT,
+      indication TEXT, gauge_or_size TEXT, lumens INTEGER,
+      removed_at TEXT, removal_reason TEXT, complications_text TEXT,
+      dressing_change_interval_days INTEGER,
+      last_dressing_change_at TEXT, line_care_notes_markdown TEXT,
+      photo_attachment_id TEXT, related_condition_id TEXT,
+      created_at TEXT NOT NULL, updated_at TEXT NOT NULL, deleted_at TEXT
+    );
+    CREATE TABLE IF NOT EXISTS cycles (
+      id TEXT PRIMARY KEY,
+      patient_id TEXT NOT NULL REFERENCES patients(id),
+      started_at TEXT NOT NULL, ended_at TEXT, notes TEXT,
+      created_at TEXT NOT NULL, updated_at TEXT NOT NULL, deleted_at TEXT
+    );
+    CREATE TABLE IF NOT EXISTS cycle_days (
+      id TEXT PRIMARY KEY,
+      cycle_id TEXT NOT NULL REFERENCES cycles(id),
+      patient_id TEXT NOT NULL REFERENCES patients(id),
+      day_of_cycle INTEGER NOT NULL, date TEXT NOT NULL,
+      bbt REAL,
+      cervical_mucus_kind TEXT, cervical_position TEXT,
+      bleeding_kind TEXT, bleeding_amount TEXT,
+      ovulation_pain INTEGER DEFAULT 0,
+      intercourse INTEGER DEFAULT 0,
+      notes TEXT,
+      created_at TEXT NOT NULL, updated_at TEXT NOT NULL
+    );
+    CREATE TABLE IF NOT EXISTS lh_tests (
+      id TEXT PRIMARY KEY,
+      patient_id TEXT NOT NULL REFERENCES patients(id),
+      cycle_id TEXT,
+      taken_at TEXT NOT NULL,
+      result TEXT, intensity INTEGER, brand TEXT,
+      photo_attachment_id TEXT, notes TEXT,
+      created_at TEXT NOT NULL, deleted_at TEXT
+    );
+    CREATE TABLE IF NOT EXISTS pregnancy_tests (
+      id TEXT PRIMARY KEY,
+      patient_id TEXT NOT NULL REFERENCES patients(id),
+      taken_at TEXT NOT NULL,
+      result TEXT, kind TEXT,
+      photo_attachment_id TEXT,
+      follow_up_hcg_quantitative REAL,
+      notes TEXT,
+      created_at TEXT NOT NULL, deleted_at TEXT
+    );
+    CREATE TABLE IF NOT EXISTS mood_entries (
+      id TEXT PRIMARY KEY,
+      patient_id TEXT NOT NULL REFERENCES patients(id),
+      logged_at TEXT NOT NULL,
+      mood_score INTEGER, energy_score INTEGER,
+      anxiety_score INTEGER, irritability_score INTEGER,
+      tags_json TEXT DEFAULT '[]',
+      notes_markdown TEXT,
+      created_at TEXT NOT NULL, deleted_at TEXT
+    );
+    CREATE TABLE IF NOT EXISTS experiments (
+      id TEXT PRIMARY KEY,
+      patient_id TEXT NOT NULL REFERENCES patients(id),
+      hypothesis TEXT NOT NULL,
+      started_at TEXT, ended_at TEXT,
+      baseline_period_days INTEGER, intervention_period_days INTEGER,
+      intervention_description TEXT,
+      target_metrics_json TEXT DEFAULT '[]',
+      status TEXT DEFAULT 'planned',
+      conclusion_markdown TEXT,
+      created_at TEXT NOT NULL, updated_at TEXT NOT NULL, deleted_at TEXT
+    );
   `);
+
+  const addColumn = (table: string, column: string, type: string) => {
+    try {
+      sqlite.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${type}`);
+    } catch (e) {
+      const msg = (e as Error).message;
+      if (!/duplicate column name/i.test(msg)) throw e;
+    }
+  };
+
+  addColumn('guideline_recommendations', 'title_native', 'TEXT');
+  addColumn('guideline_recommendations', 'recommendation_text_native', 'TEXT');
+  addColumn('guideline_recommendations', 'patient_facing_summary_native', 'TEXT');
+  addColumn('guideline_recommendations', 'native_language', 'TEXT');
+  addColumn('guideline_recommendations', 'prevention_category', 'TEXT');
+  addColumn('guideline_recommendations', 'recommendation_polarity', "TEXT DEFAULT 'for'");
+  addColumn('guideline_recommendations', 'source_file', 'TEXT');
+  addColumn('care_gaps', 'prevention_category', 'TEXT');
+  addColumn('audit_log', 'diff_json', 'TEXT');
+
+  // Soft-delete column on every canonical entity
+  for (const t of [
+    'documents', 'conditions', 'medications', 'labs', 'vitals',
+    'allergies', 'vaccines', 'encounters', 'imaging_reports',
+  ]) {
+    addColumn(t, 'deleted_at', 'TEXT');
+  }
 }
