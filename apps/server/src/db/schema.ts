@@ -277,12 +277,6 @@ export const ai_config = sqliteTable('ai_config', {
 export const guideline_packs = sqliteTable('guideline_packs', {
   country: text('country').primaryKey(),
   last_reviewed: text('last_reviewed').notNull(),
-  seeded_at: text('seeded_at').notNull(),
-});
-
-export const guideline_packs = sqliteTable('guideline_packs', {
-  country: text('country').primaryKey(),
-  last_reviewed: text('last_reviewed').notNull(),
   seeded_at: text('seeded_at').notNull().$defaultFn(() => new Date().toISOString()),
 });
 

@@ -1,0 +1,70 @@
+{
+  "country": "XX",
+  "language": "en",
+  "last_reviewed": "2026-07-20",
+  "prevention_category": "secondary_prevention",
+  "organizations": [
+    {
+      "id": "example_health_authority",
+      "name": "Example National Health Authority",
+      "abbreviation": "ENHA",
+      "country": "XX",
+      "website": "https://example.org",
+      "type": "government"
+    }
+  ],
+  "recommendations": [
+    {
+      "id": "enha-colorectal-2024",
+      "organization_id": "example_health_authority",
+      "country": "XX",
+      "topic": "colorectal_cancer_screening",
+      "subtopic": "average_risk",
+      "module_tags": ["preventive_care", "cancer_screening"],
+      "title": {
+        "en": "Colorectal Cancer Screening",
+        "xx": "[native-language title here]"
+      },
+      "recommendation_text": {
+        "en": "Screen average-risk adults aged 50 to 74 for colorectal cancer with a fecal immunochemical test (FIT) every two years.",
+        "xx": "[native-language recommendation text here]"
+      },
+      "patient_facing_summary": {
+        "en": "If you are 50 to 74, you should do a simple at-home stool test every 2 years to check for early signs of bowel cancer.",
+        "xx": "[native-language patient summary here]"
+      },
+      "evidence_grade": "A",
+      "age_min": 50,
+      "age_max": 74,
+      "sex_relevance": ["male", "female"],
+      "pregnancy_relevance": "any",
+      "risk_factors": {},
+      "interval_months": 24,
+      "prevention_category": "secondary_prevention",
+      "recommendation_polarity": "for",
+      "source_url": "https://example.org/colorectal-screening",
+      "version_date": "2024-01-15"
+    },
+    {
+      "id": "enha-influenza-2024",
+      "organization_id": "example_health_authority",
+      "country": "XX",
+      "topic": "influenza_vaccination",
+      "module_tags": ["preventive_care", "vaccination"],
+      "title": "Influenza Vaccination",
+      "recommendation_text": "Annual influenza vaccination is recommended for all adults, with priority for adults 65 and older, pregnant people, and those with chronic conditions.",
+      "patient_facing_summary": "Everyone should get a flu shot once a year, ideally in the fall. It is especially important if you are over 65, pregnant, or have a chronic illness.",
+      "evidence_grade": null,
+      "age_min": 18,
+      "age_max": null,
+      "sex_relevance": ["male", "female"],
+      "pregnancy_relevance": "any",
+      "risk_factors": {},
+      "interval_months": 12,
+      "prevention_category": "vaccination",
+      "recommendation_polarity": "for",
+      "source_url": "https://example.org/flu-vaccine",
+      "version_date": "2024-09-01"
+    }
+  ]
+}

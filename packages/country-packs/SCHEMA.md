@@ -1,11 +1,19 @@
 # Country Pack Schema
 
-Each country pack is a single JSON file at:
+Each country pack is a directory of JSON files at:
 ```
-packages/country-packs/<iso-code>/preventive-care.json
+packages/country-packs/<iso-code>/
+  preventive-care.json        # primary + secondary + tertiary prevention
+  vaccinations.json           # immunization schedules
+  chemoprevention.json        # drugs given to prevent disease
+  augmentation.json           # replacement/additive therapies (HRT, thyroid, etc.)
+  supplementation.json        # vitamins/minerals
+  lab-access.json             # direct-to-consumer lab access info (separate schema, seeded elsewhere)
 ```
 
-The seeder reads every file matching this path at server startup. No code changes required — just drop in the file.
+The seeder reads **every `*.json`** in each country directory at server startup (except `lab-access.json`). Directories starting with `_` (e.g. `_template/`) are skipped. All files share the schema below; a file may declare a file-level `prevention_category` that applies to every recommendation inside unless overridden per-rec.
+
+Files are the source of truth: recommendations updated in a file are updated in the DB on next startup, and recommendations removed from all files are deactivated (`is_active = false`).
 
 ---
 
@@ -14,14 +22,45 @@ The seeder reads every file matching this path at server startup. No code change
 ```jsonc
 {
   "country": "US",              // ISO 3166-1 alpha-2 country code
-  "language": "en",             // Primary language of the content (BCP 47)
-  "last_reviewed": "2025-04-25", // Date the pack was last checked for accuracy (YYYY-MM-DD)
-  "organizations": [...],        // Medical organizations in this country
-  "recommendations": [...]       // Preventive care recommendations
+  "language": "en",             // BCP 47 tag of the native-language content (or "en")
+  "last_reviewed": "2025-04-25", // Date this FILE was last checked for accuracy (YYYY-MM-DD)
+  "prevention_category": "secondary_prevention", // Default category for recs in this file
+  "organizations": [...],        // Medical organizations referenced by recs in this file
+  "recommendations": [...]       // Recommendations
 }
 ```
 
-`last_reviewed` is the date a human last verified that the recommendations reflect current published guidelines. The app shows a warning in the Prevention page when this is more than 12 months ago. Update it whenever you audit or update the pack.
+`last_reviewed` is the date a human last verified the file against current published guidelines. The app shows a warning on the Prevention page when a pack's oldest `last_reviewed` is more than 12 months ago. Update it whenever you audit or update the file.
+
+---
+
+## Prevention categories
+
+Every recommendation carries a `prevention_category` (per-rec, or inherited from the file):
+
+| Category | Meaning | Examples |
+|---|---|---|
+| `primary_prevention` | Lifestyle/behavioral interventions for asymptomatic people | diet & PA counseling, tobacco cessation, STI counseling |
+| `secondary_prevention` | Screening tests for asymptomatic disease | cancer screening, lipid panel, A1c screening, depression screening |
+| `tertiary_prevention` | Monitoring/managing established disease to prevent complications | diabetic foot exam, retinopathy screening, cardiac rehab |
+| `vaccination` | All immunizations | flu, Tdap, Shingrix |
+| `chemoprevention` | Drugs given specifically to prevent disease | low-dose aspirin, statins for primary prevention, tamoxifen |
+| `augmentation` | Replacement/additive therapies for deficiency or function | HRT, thyroid replacement, GLP-1 |
+| `supplementation` | Vitamins/minerals/nutritional supplements | folic acid, vitamin D |
+
+`recommendation_polarity` is `"for"` (default) or `"against"` — use `"against"` for recommendations NOT to do something (e.g. USPSTF Grade D).
+
+---
+
+## Localized text fields
+
+`title`, `recommendation_text`, and `patient_facing_summary` accept either a plain string (treated as English) or an object with English plus the pack's native language:
+
+```jsonc
+"title": { "en": "Gastric Cancer Screening", "ja": "胃がん検診" }
+```
+
+The seeder stores the English text in `title` and the native text in `title_native`; the API serves native text when the patient's preferred language matches the pack language, with English fallback.
 
 ---
 
@@ -57,7 +96,7 @@ The seeder reads every file matching this path at server startup. No code change
   "topic": "colorectal_cancer_screening",  // Snake_case topic (see topics below)
   "subtopic": "average_risk",              // Optional further classification
   "module_tags": ["preventive_care", "cancer_screening"],  // Used to filter by active modules
-  "title": "Colorectal Cancer Screening",  // Short display title
+  "title": "Colorectal Cancer Screening",  // String or localized object
   "recommendation_text": "Screen for colorectal cancer in all adults aged 45 to 75 years...",
   "patient_facing_summary": "Adults 45–75 should be screened for colorectal cancer...",
   "evidence_grade": "A",                   // A, B, C, D, I — or null if org doesn't use grades
@@ -67,6 +106,8 @@ The seeder reads every file matching this path at server startup. No code change
   "pregnancy_relevance": "any",            // "any" | "pregnant" | "not_pregnant"
   "risk_factors": {},                      // Optional structured risk factor requirements
   "interval_months": 120,                  // Recommended screening interval in months (null if varies)
+  "prevention_category": "secondary_prevention", // Overrides file default
+  "recommendation_polarity": "for",        // "for" (default) | "against"
   "source_url": "https://...",             // Link to the official recommendation
   "version_date": "2021-05-18"            // Date of the guideline version (YYYY-MM-DD)
 }
@@ -126,39 +167,4 @@ Optional structured risk requirements. Currently informational only (not enforce
 
 ## Minimal valid example
 
-```json
-{
-  "country": "AU",
-  "language": "en",
-  "organizations": [
-    {
-      "id": "cancer_council_au",
-      "name": "Cancer Council Australia",
-      "abbreviation": "CCA",
-      "country": "AU",
-      "website": "https://www.cancer.org.au",
-      "type": "professional_society"
-    }
-  ],
-  "recommendations": [
-    {
-      "id": "cca-colorectal-2023",
-      "organization_id": "cancer_council_au",
-      "country": "AU",
-      "topic": "colorectal_cancer_screening",
-      "title": "Bowel Cancer Screening",
-      "recommendation_text": "People aged 45–74 should complete a faecal occult blood test (FOBT) every two years.",
-      "patient_facing_summary": "If you're aged 45–74, a free bowel screening kit is mailed to your home every 2 years through the National Bowel Cancer Screening Program.",
-      "evidence_grade": null,
-      "age_min": 45,
-      "age_max": 74,
-      "sex_relevance": ["male", "female"],
-      "pregnancy_relevance": "any",
-      "risk_factors": {},
-      "interval_months": 24,
-      "source_url": "https://www.cancer.org.au/cancer-information/causes-and-prevention/early-detection/bowel-cancer-screening",
-      "version_date": "2023-01-01"
-    }
-  ]
-}
-```
+See `packages/country-packs/_template/` for a complete working example with a README walkthrough.
