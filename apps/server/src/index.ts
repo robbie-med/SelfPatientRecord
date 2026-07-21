@@ -69,6 +69,8 @@ import { chatWithRecord } from './ai/chat.js';
 import { evaluateModuleTriggers } from './rules/module-triggers.js';
 import { seedGuidelines } from './rules/seed-guidelines.js';
 import { detectCareGaps } from './rules/care-gaps.js';
+import { detectTrends } from './rules/trends.js';
+import { syncReminders } from './rules/reminders.js';
 import { readFileSync, existsSync, mkdirSync, writeFileSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -508,6 +510,10 @@ app.post('/api/documents/:id/confirm', async (c) => {
         await audit({ patientId: patient.id, action: 'confirmed', entityType, entityId: newId, details: { fact_id: conf.fact_id, document_id: fact.document_id }, diff: { after: row }, aiInvolved: true });
       }
     }
+
+    await detectCareGaps(patient.id);
+    await detectTrends(patient.id);
+    await syncReminders(patient.id);
 
     return c.json({ ok: true });
   } catch (e) {
@@ -1088,6 +1094,8 @@ app.get('/api/care-gaps', async (c) => {
   try {
     const patient = await getOrCreatePatient();
     await detectCareGaps(patient.id);
+    await detectTrends(patient.id);
+    await syncReminders(patient.id);
     const rows = await db.select().from(schema.care_gaps)
       .where(and(eq(schema.care_gaps.patient_id, patient.id), eq(schema.care_gaps.status, 'open')));
     return c.json(rows);
@@ -2759,6 +2767,8 @@ async function startup() {
   await seedGuidelines();
   const patient = await getOrCreatePatient();
   await detectCareGaps(patient.id);
+  await detectTrends(patient.id);
+  await syncReminders(patient.id);
   console.log(`HealthBinder server starting on ${hostname}:${port}`);
   const aiConfig = await getAIConfig();
   console.log(`AI enabled: ${aiConfig.enabled}`);
