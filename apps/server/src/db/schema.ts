@@ -675,6 +675,7 @@ export const cycle_days = sqliteTable('cycle_days', {
   notes: text('notes'),
   created_at: text('created_at').notNull().$defaultFn(now),
   updated_at: text('updated_at').notNull().$defaultFn(now),
+  deleted_at: text('deleted_at'),
 });
 
 export const lh_tests = sqliteTable('lh_tests', {

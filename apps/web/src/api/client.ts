@@ -655,3 +655,182 @@ export const getAccessDevices = () => api.get<AccessDevice[]>('/access-devices')
 export const createAccessDevice = (data: Partial<AccessDevice>) => api.post<AccessDevice>('/access-devices', data).then(r => r.data);
 export const updateAccessDevice = (id: string, data: Partial<AccessDevice>) => api.patch<AccessDevice>(`/access-devices/${id}`, data).then(r => r.data);
 export const deleteAccessDevice = (id: string) => api.delete(`/access-devices/${id}`).then(r => r.data);
+
+// ── Workstream B Batch 3: pregnancy/reproductive tools ────────────────────────
+
+export interface KickSession {
+  id: string; patient_id: string;
+  started_at: string; ended_at?: string | null;
+  count?: number | null; notes?: string | null;
+  created_at: string;
+}
+export const getKickSessions = () => api.get<KickSession[]>('/kick-sessions').then(r => r.data);
+export const createKickSession = (data: Partial<KickSession>) => api.post<KickSession>('/kick-sessions', data).then(r => r.data);
+export const updateKickSession = (id: string, data: Partial<KickSession>) => api.patch<KickSession>(`/kick-sessions/${id}`, data).then(r => r.data);
+export const deleteKickSession = (id: string) => api.delete(`/kick-sessions/${id}`).then(r => r.data);
+
+export interface Contraction {
+  id: string; patient_id: string;
+  started_at: string; ended_at?: string | null;
+  intensity?: string | null; notes?: string | null;
+  created_at: string;
+}
+export const getContractions = () => api.get<Contraction[]>('/contractions').then(r => r.data);
+export const createContraction = (data: Partial<Contraction>) => api.post<Contraction>('/contractions', data).then(r => r.data);
+export const updateContraction = (id: string, data: Partial<Contraction>) => api.patch<Contraction>(`/contractions/${id}`, data).then(r => r.data);
+export const deleteContraction = (id: string) => api.delete(`/contractions/${id}`).then(r => r.data);
+
+export interface Pregnancy {
+  id: string; patient_id: string;
+  lmp_date?: string | null; edd?: string | null;
+  conception_method?: string | null; status?: string;
+  outcome?: string | null; outcome_date?: string | null; notes?: string | null;
+  created_at: string; updated_at?: string;
+}
+export const getPregnancies = () => api.get<Pregnancy[]>('/pregnancies').then(r => r.data);
+export const createPregnancy = (data: Partial<Pregnancy>) => api.post<Pregnancy>('/pregnancies', data).then(r => r.data);
+export const updatePregnancy = (id: string, data: Partial<Pregnancy>) => api.patch<Pregnancy>(`/pregnancies/${id}`, data).then(r => r.data);
+export const deletePregnancy = (id: string) => api.delete(`/pregnancies/${id}`).then(r => r.data);
+
+export interface ScreeningResponse {
+  id: string; patient_id: string;
+  instrument: string;
+  responses_json?: string;
+  total_score?: number | null; interpretation?: string | null;
+  completed_at: string; notes?: string | null;
+  created_at: string;
+}
+export const getScreeningResponses = () => api.get<ScreeningResponse[]>('/screening-responses').then(r => r.data);
+export const createScreeningResponse = (data: Omit<Partial<ScreeningResponse>, 'responses_json'> & { responses_json?: unknown }) => api.post<ScreeningResponse>('/screening-responses', data).then(r => r.data);
+export const deleteScreeningResponse = (id: string) => api.delete(`/screening-responses/${id}`).then(r => r.data);
+
+export interface BirthPlan {
+  id: string; patient_id: string;
+  title?: string;
+  plan_json?: string;
+  finalized_at?: string | null;
+  created_at: string; updated_at?: string;
+}
+export const getBirthPlans = () => api.get<BirthPlan[]>('/birth-plans').then(r => r.data);
+export const createBirthPlan = (data: Omit<Partial<BirthPlan>, 'plan_json'> & { plan_json?: unknown }) => api.post<BirthPlan>('/birth-plans', data).then(r => r.data);
+export const updateBirthPlan = (id: string, data: Omit<Partial<BirthPlan>, 'plan_json'> & { plan_json?: unknown }) => api.patch<BirthPlan>(`/birth-plans/${id}`, data).then(r => r.data);
+export const deleteBirthPlan = (id: string) => api.delete(`/birth-plans/${id}`).then(r => r.data);
+
+export interface FeedingEvent {
+  id: string; patient_id: string;
+  started_at: string; ended_at?: string | null;
+  side?: string | null; volume_ml?: number | null; kind?: string;
+  notes?: string | null;
+  created_at: string;
+}
+export const getFeedingEvents = () => api.get<FeedingEvent[]>('/feeding-events').then(r => r.data);
+export const createFeedingEvent = (data: Partial<FeedingEvent>) => api.post<FeedingEvent>('/feeding-events', data).then(r => r.data);
+export const updateFeedingEvent = (id: string, data: Partial<FeedingEvent>) => api.patch<FeedingEvent>(`/feeding-events/${id}`, data).then(r => r.data);
+export const deleteFeedingEvent = (id: string) => api.delete(`/feeding-events/${id}`).then(r => r.data);
+
+export interface JaundiceObservation {
+  id: string; patient_id: string;
+  infant_dob: string; observed_at: string;
+  day_of_life?: number | null; area_affected?: string | null;
+  notes?: string | null; photo_attachment_id?: string | null;
+  created_at: string;
+}
+export const getJaundiceObservations = () => api.get<JaundiceObservation[]>('/jaundice-observations').then(r => r.data);
+export const createJaundiceObservation = (data: Partial<JaundiceObservation>) => api.post<JaundiceObservation>('/jaundice-observations', data).then(r => r.data);
+export const deleteJaundiceObservation = (id: string) => api.delete(`/jaundice-observations/${id}`).then(r => r.data);
+
+export interface DialysisSession {
+  id: string; patient_id: string;
+  session_date: string;
+  duration_min?: number | null; access_site?: string | null;
+  pre_weight?: number | null; post_weight?: number | null;
+  uf_goal?: number | null; uf_achieved?: number | null;
+  complications_text?: string | null; notes?: string | null;
+  created_at: string;
+}
+export const getDialysisSessions = () => api.get<DialysisSession[]>('/dialysis-sessions').then(r => r.data);
+export const createDialysisSession = (data: Partial<DialysisSession>) => api.post<DialysisSession>('/dialysis-sessions', data).then(r => r.data);
+export const updateDialysisSession = (id: string, data: Partial<DialysisSession>) => api.patch<DialysisSession>(`/dialysis-sessions/${id}`, data).then(r => r.data);
+export const deleteDialysisSession = (id: string) => api.delete(`/dialysis-sessions/${id}`).then(r => r.data);
+
+export interface Cycle {
+  id: string; patient_id: string;
+  started_at: string; ended_at?: string | null; notes?: string | null;
+  created_at: string; updated_at?: string;
+}
+export const getCycles = () => api.get<Cycle[]>('/cycles').then(r => r.data);
+export const createCycle = (data: Partial<Cycle>) => api.post<Cycle>('/cycles', data).then(r => r.data);
+export const updateCycle = (id: string, data: Partial<Cycle>) => api.patch<Cycle>(`/cycles/${id}`, data).then(r => r.data);
+export const deleteCycle = (id: string) => api.delete(`/cycles/${id}`).then(r => r.data);
+
+export interface CycleDay {
+  id: string; patient_id: string; cycle_id: string;
+  day_of_cycle: number; date: string;
+  bbt?: number | null;
+  cervical_mucus_kind?: string | null; cervical_position?: string | null;
+  bleeding_kind?: string | null; bleeding_amount?: string | null;
+  ovulation_pain?: boolean; intercourse?: boolean;
+  notes?: string | null;
+  created_at: string;
+}
+export const getCycleDays = (cycleId: string) => api.get<CycleDay[]>(`/cycles/${cycleId}/days`).then(r => r.data);
+export const createCycleDay = (data: Partial<CycleDay>) => api.post<CycleDay>('/cycle-days', data).then(r => r.data);
+export const updateCycleDay = (id: string, data: Partial<CycleDay>) => api.patch<CycleDay>(`/cycle-days/${id}`, data).then(r => r.data);
+export const deleteCycleDay = (id: string) => api.delete(`/cycle-days/${id}`).then(r => r.data);
+
+export interface LhTest {
+  id: string; patient_id: string;
+  cycle_id?: string | null;
+  taken_at: string;
+  result?: string | null; intensity?: number | null; brand?: string | null;
+  photo_attachment_id?: string | null; notes?: string | null;
+  created_at: string;
+}
+export const getLhTests = () => api.get<LhTest[]>('/lh-tests').then(r => r.data);
+export const createLhTest = (data: Partial<LhTest>) => api.post<LhTest>('/lh-tests', data).then(r => r.data);
+export const deleteLhTest = (id: string) => api.delete(`/lh-tests/${id}`).then(r => r.data);
+
+export interface PregnancyTest {
+  id: string; patient_id: string;
+  taken_at: string;
+  result?: string | null; kind?: string | null;
+  photo_attachment_id?: string | null;
+  follow_up_hcg_quantitative?: number | null;
+  notes?: string | null;
+  created_at: string;
+}
+export const getPregnancyTests = () => api.get<PregnancyTest[]>('/pregnancy-tests').then(r => r.data);
+export const createPregnancyTest = (data: Partial<PregnancyTest>) => api.post<PregnancyTest>('/pregnancy-tests', data).then(r => r.data);
+export const deletePregnancyTest = (id: string) => api.delete(`/pregnancy-tests/${id}`).then(r => r.data);
+
+// ── Workstream B Batch 4: mind/experiential tools ─────────────────────────────
+
+export interface MoodEntry {
+  id: string; patient_id: string;
+  logged_at: string;
+  mood_score?: number | null; energy_score?: number | null;
+  anxiety_score?: number | null; irritability_score?: number | null;
+  tags_json?: string;
+  notes_markdown?: string | null;
+  created_at: string;
+}
+export const getMoodEntries = () => api.get<MoodEntry[]>('/mood-entries').then(r => r.data);
+export const createMoodEntry = (data: Omit<Partial<MoodEntry>, 'tags_json'> & { tags_json?: unknown }) => api.post<MoodEntry>('/mood-entries', data).then(r => r.data);
+export const updateMoodEntry = (id: string, data: Omit<Partial<MoodEntry>, 'tags_json'> & { tags_json?: unknown }) => api.patch<MoodEntry>(`/mood-entries/${id}`, data).then(r => r.data);
+export const deleteMoodEntry = (id: string) => api.delete(`/mood-entries/${id}`).then(r => r.data);
+
+export interface Experiment {
+  id: string; patient_id: string;
+  hypothesis: string;
+  started_at?: string | null; ended_at?: string | null;
+  baseline_period_days?: number | null; intervention_period_days?: number | null;
+  intervention_description?: string | null;
+  target_metrics_json?: string;
+  status?: string;
+  conclusion_markdown?: string | null;
+  created_at: string; updated_at?: string;
+}
+export const getExperiments = () => api.get<Experiment[]>('/experiments').then(r => r.data);
+export const createExperiment = (data: Omit<Partial<Experiment>, 'target_metrics_json'> & { target_metrics_json?: unknown }) => api.post<Experiment>('/experiments', data).then(r => r.data);
+export const updateExperiment = (id: string, data: Omit<Partial<Experiment>, 'target_metrics_json'> & { target_metrics_json?: unknown }) => api.patch<Experiment>(`/experiments/${id}`, data).then(r => r.data);
+export const deleteExperiment = (id: string) => api.delete(`/experiments/${id}`).then(r => r.data);

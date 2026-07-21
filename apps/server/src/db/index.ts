@@ -505,7 +505,7 @@ export function initDb() {
       ovulation_pain INTEGER DEFAULT 0,
       intercourse INTEGER DEFAULT 0,
       notes TEXT,
-      created_at TEXT NOT NULL, updated_at TEXT NOT NULL
+      created_at TEXT NOT NULL, updated_at TEXT NOT NULL, deleted_at TEXT
     );
     CREATE TABLE IF NOT EXISTS lh_tests (
       id TEXT PRIMARY KEY,
@@ -559,6 +559,7 @@ export function initDb() {
     }
   };
 
+  addColumn('cycle_days', 'deleted_at', 'TEXT');
   addColumn('guideline_recommendations', 'title_native', 'TEXT');
   addColumn('guideline_recommendations', 'recommendation_text_native', 'TEXT');
   addColumn('guideline_recommendations', 'patient_facing_summary_native', 'TEXT');

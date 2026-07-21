@@ -2551,7 +2551,7 @@ app.get('/api/cycles/:cycleId/days', async (c) => {
       .limit(1);
     if (!cycleRows.length) return c.json({ error: 'not_found' }, 404);
     return c.json(await db.select().from(schema.cycle_days)
-      .where(and(eq(schema.cycle_days.cycle_id, cycleId), eq(schema.cycle_days.patient_id, patient.id)))
+      .where(and(eq(schema.cycle_days.cycle_id, cycleId), eq(schema.cycle_days.patient_id, patient.id), isNull(schema.cycle_days.deleted_at)))
       .orderBy(schema.cycle_days.day_of_cycle));
   } catch (e) { console.error(e); return c.json({ error: 'Internal server error' }, 500); }
 });
@@ -2577,6 +2577,15 @@ app.patch('/api/cycle-days/:id', async (c) => {
     const after = await db.select().from(schema.cycle_days).where(eq(schema.cycle_days.id, id)).limit(1);
     await audit({ patientId: before[0]?.patient_id ?? null, action: 'updated', entityType: 'cycle_day', entityId: id, diff: { before: before[0] as unknown as Record<string, unknown>, after: after[0] as unknown as Record<string, unknown> } });
     return c.json(after[0]);
+  } catch (e) { console.error(e); return c.json({ error: 'Internal server error' }, 500); }
+});
+app.delete('/api/cycle-days/:id', async (c) => {
+  try {
+    const id = c.req.param('id');
+    const before = await db.select().from(schema.cycle_days).where(eq(schema.cycle_days.id, id)).limit(1);
+    await db.update(schema.cycle_days).set({ deleted_at: new Date().toISOString() }).where(eq(schema.cycle_days.id, id));
+    await audit({ patientId: before[0]?.patient_id ?? null, action: 'deleted', entityType: 'cycle_day', entityId: id, diff: { before: before[0] as unknown as Record<string, unknown> } });
+    return c.json({ ok: true });
   } catch (e) { console.error(e); return c.json({ error: 'Internal server error' }, 500); }
 });
 
