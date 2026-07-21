@@ -10,6 +10,7 @@ export interface FieldDef {
   required?: boolean;
   options?: string[];
   fullWidth?: boolean;
+  defaultValue?: string;
 }
 
 interface Row { id: string }
@@ -26,8 +27,24 @@ export interface CrudToolConfig<T extends Row> {
   cardMeta?: (row: T) => Array<string | null | undefined>;
 }
 
+function nowLocalDatetime(): string {
+  const d = new Date();
+  d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+  return d.toISOString().slice(0, 16);
+}
+
+function todayLocalDate(): string {
+  return nowLocalDatetime().slice(0, 10);
+}
+
 function emptyForm(fields: FieldDef[]): Record<string, string | boolean> {
-  return Object.fromEntries(fields.map(f => [f.name, f.type === 'checkbox' ? false : '']));
+  return Object.fromEntries(fields.map(f => {
+    if (f.type === 'checkbox') return [f.name, false];
+    if (f.defaultValue !== undefined) return [f.name, f.defaultValue];
+    if (f.type === 'datetime') return [f.name, nowLocalDatetime()];
+    if (f.type === 'date') return [f.name, todayLocalDate()];
+    return [f.name, ''];
+  }));
 }
 
 function toPayload(fields: FieldDef[], form: Record<string, string | boolean>): Record<string, unknown> {
