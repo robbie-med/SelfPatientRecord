@@ -294,10 +294,12 @@ export const getMedications = (status?: string) =>
   api.get<Medication[]>('/medications', { params: status ? { status } : undefined }).then(r => r.data);
 export const createMedication = (data: Partial<Medication>) => api.post<Medication>('/medications', data).then(r => r.data);
 export const updateMedication = (id: string, data: Partial<Medication>) => api.put<Medication>(`/medications/${id}`, data).then(r => r.data);
+export const deleteMedication = (id: string) => api.delete(`/medications/${id}`).then(r => r.data);
 
 export const getLabs = (testName?: string) =>
   api.get<Lab[]>('/labs', { params: testName ? { test_name: testName } : undefined }).then(r => r.data);
 export const createLab = (data: Partial<Lab>) => api.post<Lab>('/labs', data).then(r => r.data);
+export const deleteLab = (id: string) => api.delete(`/labs/${id}`).then(r => r.data);
 export const getLabHistory = (testName: string) =>
   api.get<Lab[]>(`/labs/history/${encodeURIComponent(testName)}`).then(r => r.data);
 export const getLabExplainer = (testName: string) =>
@@ -306,6 +308,7 @@ export const getLabExplainer = (testName: string) =>
 export const getVitals = (type?: string) =>
   api.get<Vital[]>('/vitals', { params: type ? { type } : undefined }).then(r => r.data);
 export const createVital = (data: Partial<Vital>) => api.post<Vital>('/vitals', data).then(r => r.data);
+export const deleteVital = (id: string) => api.delete(`/vitals/${id}`).then(r => r.data);
 
 export const getAllergies = () => api.get<Allergy[]>('/allergies').then(r => r.data);
 export const createAllergy = (data: Partial<Allergy>) => api.post<Allergy>('/allergies', data).then(r => r.data);
@@ -313,12 +316,15 @@ export const deleteAllergy = (id: string) => api.delete(`/allergies/${id}`).then
 
 export const getVaccines = () => api.get<Vaccine[]>('/vaccines').then(r => r.data);
 export const createVaccine = (data: Partial<Vaccine>) => api.post<Vaccine>('/vaccines', data).then(r => r.data);
+export const deleteVaccine = (id: string) => api.delete(`/vaccines/${id}`).then(r => r.data);
 
 export const getEncounters = () => api.get<Encounter[]>('/encounters').then(r => r.data);
 export const createEncounter = (data: Partial<Encounter>) => api.post<Encounter>('/encounters', data).then(r => r.data);
+export const deleteEncounter = (id: string) => api.delete(`/encounters/${id}`).then(r => r.data);
 
 export const getImaging = () => api.get<ImagingReport[]>('/imaging').then(r => r.data);
 export const createImaging = (data: Partial<ImagingReport>) => api.post<ImagingReport>('/imaging', data).then(r => r.data);
+export const deleteImaging = (id: string) => api.delete(`/imaging/${id}`).then(r => r.data);
 export const getImagingExplainer = (term: string) =>
   api.get<ImagingExplainer>(`/imaging/explain/${encodeURIComponent(term)}`).then(r => r.data).catch(() => null);
 

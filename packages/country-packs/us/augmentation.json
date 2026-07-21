@@ -1,0 +1,97 @@
+{
+  "country": "US",
+  "language": "en",
+  "last_reviewed": "2026-07-20",
+  "prevention_category": "augmentation",
+  "organizations": [
+    {
+      "id": "nams",
+      "name": "The Menopause Society (formerly North American Menopause Society)",
+      "abbreviation": "NAMS",
+      "country": "US",
+      "website": "https://menopause.org",
+      "type": "professional_society"
+    },
+    {
+      "id": "ata",
+      "name": "American Thyroid Association",
+      "abbreviation": "ATA",
+      "country": "US",
+      "website": "https://www.thyroid.org",
+      "type": "professional_society"
+    },
+    {
+      "id": "aace",
+      "name": "American Association of Clinical Endocrinology",
+      "abbreviation": "AACE",
+      "country": "US",
+      "website": "https://www.aace.com",
+      "type": "professional_society"
+    }
+  ],
+  "recommendations": [
+    {
+      "id": "nams-hrt-2022",
+      "organization_id": "nams",
+      "country": "US",
+      "topic": "menopause_hormone_therapy",
+      "subtopic": "vasomotor_symptoms",
+      "module_tags": ["womens_health"],
+      "title": "Menopausal Hormone Therapy for Vasomotor Symptoms",
+      "recommendation_text": "For healthy women younger than 60 years or within 10 years of menopause onset who have bothersome vasomotor symptoms (hot flashes, night sweats) and no contraindications, hormone therapy is the most effective treatment and the benefits generally outweigh the risks. Therapy should be individualized using the lowest effective dose, with periodic reevaluation; decisions for women older than 60 or more than 10 years past menopause should weigh the higher risk profile.",
+      "patient_facing_summary": "If hot flashes or night sweats are disrupting your life and you are under 60 or within 10 years of menopause, hormone therapy is the most effective treatment and is considered safe for most healthy women in this window. Discuss your personal risks (clotting, breast cancer, heart disease) with your doctor to decide whether it is right for you and which form and dose to use.",
+      "evidence_grade": null,
+      "age_min": 40,
+      "age_max": 60,
+      "sex_relevance": ["female"],
+      "pregnancy_relevance": "not_pregnant",
+      "risk_factors": {},
+      "interval_months": null,
+      "recommendation_polarity": "for",
+      "source_url": "https://menopause.org",
+      "version_date": "2022-07-01"
+    },
+    {
+      "id": "ata-thyroid-replacement",
+      "organization_id": "ata",
+      "country": "US",
+      "topic": "hypothyroidism_treatment",
+      "subtopic": "levothyroxine_replacement",
+      "module_tags": ["endocrine", "thyroid"],
+      "title": "Levothyroxine Replacement for Overt Hypothyroidism",
+      "recommendation_text": "Levothyroxine is the standard of care for the treatment of overt hypothyroidism, dosed to normalize the serum TSH level. It should be taken on an empty stomach, ideally 60 minutes before breakfast, and TSH should be rechecked 4–8 weeks after initiation or any dose change, then every 6–12 months once stable.",
+      "patient_facing_summary": "If you have been diagnosed with an underactive thyroid (overt hypothyroidism), the standard treatment is a daily levothyroxine tablet that replaces the missing hormone. Take it on an empty stomach, and have your TSH blood level checked about 6 weeks after starting or changing the dose, then once or twice a year.",
+      "evidence_grade": null,
+      "age_min": null,
+      "age_max": null,
+      "sex_relevance": ["male", "female"],
+      "pregnancy_relevance": "any",
+      "risk_factors": { "diagnosis": "hypothyroidism" },
+      "interval_months": 12,
+      "recommendation_polarity": "for",
+      "source_url": "https://www.thyroid.org/professionals/ata-professional-guidelines/",
+      "version_date": "2012-12-01"
+    },
+    {
+      "id": "glp1-weight-management",
+      "organization_id": "aace",
+      "country": "US",
+      "topic": "obesity_pharmacotherapy",
+      "subtopic": "glp1_receptor_agonist",
+      "module_tags": ["metabolic_risk", "diabetes", "endocrine"],
+      "title": "GLP-1 Receptor Agonists for Weight Management",
+      "recommendation_text": "Pharmacotherapy with a GLP-1 receptor agonist is recommended as an adjunct to lifestyle therapy (reduced-calorie meal plan and increased physical activity) for adults with a BMI of 30 kg/m² or greater, or 27 kg/m² or greater with at least one weight-related comorbidity (e.g., hypertension, dyslipidemia, type 2 diabetes, obstructive sleep apnea).",
+      "patient_facing_summary": "For adults with obesity (BMI 30+, or 27+ with a related condition like high blood pressure or type 2 diabetes), GLP-1 medications (such as semaglutide or liraglutide) can be added to diet and exercise to achieve meaningful weight loss. Discuss benefits, side effects, cost, and the need for long-term use with your doctor.",
+      "evidence_grade": null,
+      "age_min": 18,
+      "age_max": null,
+      "sex_relevance": ["male", "female"],
+      "pregnancy_relevance": "not_pregnant",
+      "risk_factors": { "bmi_category": ["obesity"] },
+      "interval_months": null,
+      "recommendation_polarity": "for",
+      "source_url": "https://www.aace.com",
+      "version_date": "2016-05-24"
+    }
+  ]
+}

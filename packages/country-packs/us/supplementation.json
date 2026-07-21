@@ -1,0 +1,81 @@
+{
+  "country": "US",
+  "language": "en",
+  "last_reviewed": "2026-07-20",
+  "prevention_category": "supplementation",
+  "organizations": [
+    {
+      "id": "uspstf",
+      "name": "United States Preventive Services Task Force",
+      "abbreviation": "USPSTF",
+      "country": "US",
+      "website": "https://www.uspreventiveservicestaskforce.org",
+      "type": "government_affiliated"
+    }
+  ],
+  "recommendations": [
+    {
+      "id": "uspstf-folic-acid-2023",
+      "organization_id": "uspstf",
+      "country": "US",
+      "topic": "neural_tube_defect_prevention",
+      "subtopic": "folic_acid_supplementation",
+      "module_tags": ["preventive_care", "pregnancy", "womens_health"],
+      "title": "Folic Acid Supplementation to Prevent Neural Tube Defects",
+      "recommendation_text": "All persons who are planning or capable of pregnancy should take a daily supplement containing 0.4 to 0.8 mg (400 to 800 µg) of folic acid. Supplementation should start at least 1 month before conception and continue through the first 2 to 3 months of pregnancy.",
+      "patient_facing_summary": "If you could become pregnant — even if you are not planning to — take a daily folic acid supplement (400–800 micrograms), found in most multivitamins and prenatal vitamins. It prevents serious birth defects of the baby's brain and spine, and it works only if started before pregnancy and in the first weeks after conception.",
+      "evidence_grade": "B",
+      "age_min": 12,
+      "age_max": 50,
+      "sex_relevance": ["female"],
+      "pregnancy_relevance": "any",
+      "risk_factors": {},
+      "interval_months": null,
+      "recommendation_polarity": "for",
+      "source_url": "https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/folic-acid-supplementation-to-prevent-neural-tube-defects",
+      "version_date": "2023-08-01"
+    },
+    {
+      "id": "uspstf-vitamin-d-falls-2018",
+      "organization_id": "uspstf",
+      "country": "US",
+      "topic": "falls_prevention",
+      "subtopic": "vitamin_d_supplementation_against",
+      "module_tags": ["preventive_care", "bone_health"],
+      "title": "Vitamin D Supplementation for Fall Prevention — Not Recommended",
+      "recommendation_text": "Do not use vitamin D supplementation to prevent falls in community-dwelling adults 65 years or older. Vitamin D supplementation has no net benefit for fall prevention in this population; exercise interventions are the recommended alternative.",
+      "patient_facing_summary": "Taking vitamin D supplements does not help prevent falls in older adults living at home and is not recommended for that purpose. Exercise programs — especially balance and strength training — are what actually reduce fall risk. (This does not apply to vitamin D prescribed for a documented deficiency or bone disease.)",
+      "evidence_grade": "D",
+      "age_min": 65,
+      "age_max": null,
+      "sex_relevance": ["male", "female"],
+      "pregnancy_relevance": "any",
+      "risk_factors": {},
+      "interval_months": null,
+      "recommendation_polarity": "against",
+      "source_url": "https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/falls-prevention-in-older-adults-interventions",
+      "version_date": "2018-04-17"
+    },
+    {
+      "id": "uspstf-vitamin-d-fracture-2018",
+      "organization_id": "uspstf",
+      "country": "US",
+      "topic": "fracture_prevention",
+      "subtopic": "vitamin_d_calcium_against",
+      "module_tags": ["preventive_care", "bone_health", "womens_health"],
+      "title": "Vitamin D and Calcium for Fracture Prevention — Not Recommended (Postmenopausal Women)",
+      "recommendation_text": "Do not use daily supplementation with 400 IU or less of vitamin D3 and 1,000 mg or less of calcium for the primary prevention of fractures in community-dwelling postmenopausal women. Evidence is insufficient for higher doses, and for premenopausal women and men.",
+      "patient_facing_summary": "Daily low-dose vitamin D and calcium supplements are not recommended to prevent fractures in postmenopausal women living at home — they do not reduce fracture risk at these doses. Bone density screening and, when appropriate, prescription osteoporosis treatment are the proven approaches.",
+      "evidence_grade": "D",
+      "age_min": 45,
+      "age_max": null,
+      "sex_relevance": ["female"],
+      "pregnancy_relevance": "not_pregnant",
+      "risk_factors": {},
+      "interval_months": null,
+      "recommendation_polarity": "against",
+      "source_url": "https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/vitamin-d-calcium-or-combined-supplementation-for-the-primary-prevention-of-fractures-in-adults-preventive-medication",
+      "version_date": "2018-04-17"
+    }
+  ]
+}

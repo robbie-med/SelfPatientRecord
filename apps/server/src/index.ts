@@ -3,7 +3,7 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { serveStatic } from '@hono/node-server/serve-static';
 import { v4 as uuid } from 'uuid';
-import { eq, desc, and, lt, isNull, SQL } from 'drizzle-orm';
+import { eq, desc, and, or, lt, isNull, SQL } from 'drizzle-orm';
 
 const DEFAULT_PAGE_SIZE = 50;
 const MAX_PAGE_SIZE = 200;
@@ -302,6 +302,7 @@ app.put('/api/patient', async (c) => {
     await db.update(schema.patients).set(updates).where(eq(schema.patients.id, patient.id));
     const updated = await db.select().from(schema.patients).where(eq(schema.patients.id, patient.id)).limit(1);
     const row = updated[0];
+    await audit({ patientId: patient.id, action: 'updated', entityType: 'patient', entityId: patient.id, diff: { before: patient as unknown as Record<string, unknown>, after: row as unknown as Record<string, unknown> } });
     return c.json({
       ...row,
       secondary_languages: JSON.parse(row.secondary_languages ?? '[]'),
@@ -365,7 +366,7 @@ app.post('/api/documents', async (c) => {
 
 app.get('/api/documents/:id', async (c) => {
   try {
-    const rows = await db.select().from(schema.documents).where(eq(schema.documents.id, c.req.param('id'))).limit(1);
+    const rows = await db.select().from(schema.documents).where(and(eq(schema.documents.id, c.req.param('id')), isNull(schema.documents.deleted_at))).limit(1);
     if (!rows.length) return c.json({ error: 'Not found' }, 404);
     return c.json(rows[0]);
   } catch (e) {
@@ -625,6 +626,20 @@ app.put('/api/medications/:id', async (c) => {
   }
 });
 
+app.delete('/api/medications/:id', async (c) => {
+  try {
+    const id = c.req.param('id');
+    const before = await db.select().from(schema.medications).where(eq(schema.medications.id, id)).limit(1);
+    const now = new Date().toISOString();
+    await db.update(schema.medications).set({ deleted_at: now, updated_at: now }).where(eq(schema.medications.id, id));
+    await audit({ patientId: before[0]?.patient_id ?? null, action: 'deleted', entityType: 'medication', entityId: id, diff: { before: before[0] as unknown as Record<string, unknown> } });
+    return c.json({ ok: true });
+  } catch (e) {
+    console.error(e);
+    return c.json({ error: 'Internal server error' }, 500);
+  }
+});
+
 // ── Labs ──────────────────────────────────────────────────────────────────────
 app.get('/api/labs', async (c) => {
   try {
@@ -660,6 +675,20 @@ app.post('/api/labs', async (c) => {
     await db.insert(schema.labs).values(row);
     await audit({ patientId: patient.id, action: 'created', entityType: 'lab', entityId: row.id, diff: { after: row as Record<string, unknown> } });
     return c.json(row, 201);
+  } catch (e) {
+    console.error(e);
+    return c.json({ error: 'Internal server error' }, 500);
+  }
+});
+
+app.delete('/api/labs/:id', async (c) => {
+  try {
+    const id = c.req.param('id');
+    const before = await db.select().from(schema.labs).where(eq(schema.labs.id, id)).limit(1);
+    const now = new Date().toISOString();
+    await db.update(schema.labs).set({ deleted_at: now }).where(eq(schema.labs.id, id));
+    await audit({ patientId: before[0]?.patient_id ?? null, action: 'deleted', entityType: 'lab', entityId: id, diff: { before: before[0] as unknown as Record<string, unknown> } });
+    return c.json({ ok: true });
   } catch (e) {
     console.error(e);
     return c.json({ error: 'Internal server error' }, 500);
@@ -727,6 +756,20 @@ app.post('/api/vitals', async (c) => {
     await db.insert(schema.vitals).values(row);
     await audit({ patientId: patient.id, action: 'created', entityType: 'vital', entityId: row.id, diff: { after: row as Record<string, unknown> } });
     return c.json(row, 201);
+  } catch (e) {
+    console.error(e);
+    return c.json({ error: 'Internal server error' }, 500);
+  }
+});
+
+app.delete('/api/vitals/:id', async (c) => {
+  try {
+    const id = c.req.param('id');
+    const before = await db.select().from(schema.vitals).where(eq(schema.vitals.id, id)).limit(1);
+    const now = new Date().toISOString();
+    await db.update(schema.vitals).set({ deleted_at: now }).where(eq(schema.vitals.id, id));
+    await audit({ patientId: before[0]?.patient_id ?? null, action: 'deleted', entityType: 'vital', entityId: id, diff: { before: before[0] as unknown as Record<string, unknown> } });
+    return c.json({ ok: true });
   } catch (e) {
     console.error(e);
     return c.json({ error: 'Internal server error' }, 500);
@@ -801,6 +844,20 @@ app.post('/api/vaccines', async (c) => {
   }
 });
 
+app.delete('/api/vaccines/:id', async (c) => {
+  try {
+    const id = c.req.param('id');
+    const before = await db.select().from(schema.vaccines).where(eq(schema.vaccines.id, id)).limit(1);
+    const now = new Date().toISOString();
+    await db.update(schema.vaccines).set({ deleted_at: now }).where(eq(schema.vaccines.id, id));
+    await audit({ patientId: before[0]?.patient_id ?? null, action: 'deleted', entityType: 'vaccine', entityId: id, diff: { before: before[0] as unknown as Record<string, unknown> } });
+    return c.json({ ok: true });
+  } catch (e) {
+    console.error(e);
+    return c.json({ error: 'Internal server error' }, 500);
+  }
+});
+
 // ── Encounters ────────────────────────────────────────────────────────────────
 app.get('/api/encounters', async (c) => {
   try {
@@ -833,6 +890,20 @@ app.post('/api/encounters', async (c) => {
     await db.insert(schema.encounters).values(row);
     await audit({ patientId: patient.id, action: 'created', entityType: 'encounter', entityId: row.id, diff: { after: row as Record<string, unknown> } });
     return c.json(row, 201);
+  } catch (e) {
+    console.error(e);
+    return c.json({ error: 'Internal server error' }, 500);
+  }
+});
+
+app.delete('/api/encounters/:id', async (c) => {
+  try {
+    const id = c.req.param('id');
+    const before = await db.select().from(schema.encounters).where(eq(schema.encounters.id, id)).limit(1);
+    const now = new Date().toISOString();
+    await db.update(schema.encounters).set({ deleted_at: now }).where(eq(schema.encounters.id, id));
+    await audit({ patientId: before[0]?.patient_id ?? null, action: 'deleted', entityType: 'encounter', entityId: id, diff: { before: before[0] as unknown as Record<string, unknown> } });
+    return c.json({ ok: true });
   } catch (e) {
     console.error(e);
     return c.json({ error: 'Internal server error' }, 500);
@@ -874,6 +945,20 @@ app.post('/api/imaging', async (c) => {
     await db.insert(schema.imaging_reports).values(row);
     await audit({ patientId: patient.id, action: 'created', entityType: 'imaging', entityId: row.id, diff: { after: row as Record<string, unknown> } });
     return c.json(row, 201);
+  } catch (e) {
+    console.error(e);
+    return c.json({ error: 'Internal server error' }, 500);
+  }
+});
+
+app.delete('/api/imaging/:id', async (c) => {
+  try {
+    const id = c.req.param('id');
+    const before = await db.select().from(schema.imaging_reports).where(eq(schema.imaging_reports.id, id)).limit(1);
+    const now = new Date().toISOString();
+    await db.update(schema.imaging_reports).set({ deleted_at: now }).where(eq(schema.imaging_reports.id, id));
+    await audit({ patientId: before[0]?.patient_id ?? null, action: 'deleted', entityType: 'imaging', entityId: id, diff: { before: before[0] as unknown as Record<string, unknown> } });
+    return c.json({ ok: true });
   } catch (e) {
     console.error(e);
     return c.json({ error: 'Internal server error' }, 500);
@@ -1206,7 +1291,7 @@ app.get('/api/supplements', async (c) => {
 app.get('/api/supplements/:id', async (c) => {
   try {
     const id = c.req.param('id');
-    const rows = await db.select().from(schema.supplements).where(eq(schema.supplements.id, id)).limit(1);
+    const rows = await db.select().from(schema.supplements).where(and(eq(schema.supplements.id, id), isNull(schema.supplements.deleted_at))).limit(1);
     if (!rows.length) return c.json({ error: 'not_found' }, 404);
     return c.json(rows[0]);
   } catch (e) {
@@ -1276,7 +1361,7 @@ app.get('/api/illness-episodes', async (c) => {
 app.get('/api/illness-episodes/:id', async (c) => {
   try {
     const id = c.req.param('id');
-    const rows = await db.select().from(schema.illness_episodes).where(eq(schema.illness_episodes.id, id)).limit(1);
+    const rows = await db.select().from(schema.illness_episodes).where(and(eq(schema.illness_episodes.id, id), isNull(schema.illness_episodes.deleted_at))).limit(1);
     if (!rows.length) return c.json({ error: 'not_found' }, 404);
     return c.json(rows[0]);
   } catch (e) {
@@ -1353,7 +1438,7 @@ app.get('/api/med-admin-log', async (c) => {
 app.get('/api/med-admin-log/:id', async (c) => {
   try {
     const id = c.req.param('id');
-    const rows = await db.select().from(schema.med_admin_log).where(eq(schema.med_admin_log.id, id)).limit(1);
+    const rows = await db.select().from(schema.med_admin_log).where(and(eq(schema.med_admin_log.id, id), isNull(schema.med_admin_log.deleted_at))).limit(1);
     if (!rows.length) return c.json({ error: 'not_found' }, 404);
     return c.json(rows[0]);
   } catch (e) {
@@ -1443,7 +1528,7 @@ app.get('/api/attachments', async (c) => {
 app.get('/api/attachments/:id', async (c) => {
   try {
     const id = c.req.param('id');
-    const rows = await db.select().from(schema.attachments).where(eq(schema.attachments.id, id)).limit(1);
+    const rows = await db.select().from(schema.attachments).where(and(eq(schema.attachments.id, id), isNull(schema.attachments.deleted_at))).limit(1);
     if (!rows.length) return c.json({ error: 'not_found' }, 404);
     return c.json(rows[0]);
   } catch (e) {
@@ -1550,8 +1635,13 @@ app.delete('/api/attachments/:id', async (c) => {
 app.get('/api/reminders', async (c) => {
   try {
     const patient = await getOrCreatePatient();
+    const conds: SQL[] = [eq(schema.reminders.patient_id, patient.id)];
+    if (c.req.query('include') !== 'all') {
+      conds.push(isNull(schema.reminders.dismissed_at));
+      conds.push(or(isNull(schema.reminders.snoozed_until), lt(schema.reminders.snoozed_until, new Date().toISOString())) as SQL);
+    }
     const rows = await db.select().from(schema.reminders)
-      .where(eq(schema.reminders.patient_id, patient.id))
+      .where(and(...conds))
       .orderBy(desc(schema.reminders.due_at));
     return c.json(rows);
   } catch (e) {
@@ -1616,8 +1706,9 @@ app.delete('/api/reminders/:id', async (c) => {
   try {
     const id = c.req.param('id');
     const before = await db.select().from(schema.reminders).where(eq(schema.reminders.id, id)).limit(1);
-    await db.delete(schema.reminders).where(eq(schema.reminders.id, id));
-    await audit({ patientId: before[0]?.patient_id ?? null, action: 'deleted', entityType: 'reminder', entityId: id, diff: { before: before[0] as unknown as Record<string, unknown> } });
+    const now = new Date().toISOString();
+    await db.update(schema.reminders).set({ dismissed_at: now, updated_at: now }).where(eq(schema.reminders.id, id));
+    await audit({ patientId: before[0]?.patient_id ?? null, action: 'dismissed', entityType: 'reminder', entityId: id, diff: { before: before[0] as unknown as Record<string, unknown> } });
     return c.json({ ok: true });
   } catch (e) {
     console.error(e);
@@ -1688,7 +1779,7 @@ app.get('/api/surgeries', async (c) => {
 });
 app.get('/api/surgeries/:id', async (c) => {
   try {
-    const rows = await db.select().from(schema.surgeries).where(eq(schema.surgeries.id, c.req.param('id'))).limit(1);
+    const rows = await db.select().from(schema.surgeries).where(and(eq(schema.surgeries.id, c.req.param('id')), isNull(schema.surgeries.deleted_at))).limit(1);
     if (!rows.length) return c.json({ error: 'not_found' }, 404);
     return c.json(rows[0]);
   } catch (e) { console.error(e); return c.json({ error: 'Internal server error' }, 500); }
@@ -1737,7 +1828,7 @@ app.get('/api/implants', async (c) => {
 });
 app.get('/api/implants/:id', async (c) => {
   try {
-    const rows = await db.select().from(schema.implants).where(eq(schema.implants.id, c.req.param('id'))).limit(1);
+    const rows = await db.select().from(schema.implants).where(and(eq(schema.implants.id, c.req.param('id')), isNull(schema.implants.deleted_at))).limit(1);
     if (!rows.length) return c.json({ error: 'not_found' }, 404);
     return c.json(rows[0]);
   } catch (e) { console.error(e); return c.json({ error: 'Internal server error' }, 500); }
@@ -1786,7 +1877,7 @@ app.get('/api/equipment', async (c) => {
 });
 app.get('/api/equipment/:id', async (c) => {
   try {
-    const rows = await db.select().from(schema.equipment).where(eq(schema.equipment.id, c.req.param('id'))).limit(1);
+    const rows = await db.select().from(schema.equipment).where(and(eq(schema.equipment.id, c.req.param('id')), isNull(schema.equipment.deleted_at))).limit(1);
     if (!rows.length) return c.json({ error: 'not_found' }, 404);
     return c.json(rows[0]);
   } catch (e) { console.error(e); return c.json({ error: 'Internal server error' }, 500); }
@@ -1835,7 +1926,7 @@ app.get('/api/sensitivities', async (c) => {
 });
 app.get('/api/sensitivities/:id', async (c) => {
   try {
-    const rows = await db.select().from(schema.sensitivities).where(eq(schema.sensitivities.id, c.req.param('id'))).limit(1);
+    const rows = await db.select().from(schema.sensitivities).where(and(eq(schema.sensitivities.id, c.req.param('id')), isNull(schema.sensitivities.deleted_at))).limit(1);
     if (!rows.length) return c.json({ error: 'not_found' }, 404);
     return c.json(rows[0]);
   } catch (e) { console.error(e); return c.json({ error: 'Internal server error' }, 500); }
@@ -2055,7 +2146,7 @@ app.get('/api/access-devices', async (c) => {
 });
 app.get('/api/access-devices/:id', async (c) => {
   try {
-    const rows = await db.select().from(schema.access_devices).where(eq(schema.access_devices.id, c.req.param('id'))).limit(1);
+    const rows = await db.select().from(schema.access_devices).where(and(eq(schema.access_devices.id, c.req.param('id')), isNull(schema.access_devices.deleted_at))).limit(1);
     if (!rows.length) return c.json({ error: 'not_found' }, 404);
     return c.json(rows[0]);
   } catch (e) { console.error(e); return c.json({ error: 'Internal server error' }, 500); }
@@ -2259,7 +2350,7 @@ app.get('/api/birth-plans', async (c) => {
 });
 app.get('/api/birth-plans/:id', async (c) => {
   try {
-    const rows = await db.select().from(schema.birth_plans).where(eq(schema.birth_plans.id, c.req.param('id'))).limit(1);
+    const rows = await db.select().from(schema.birth_plans).where(and(eq(schema.birth_plans.id, c.req.param('id')), isNull(schema.birth_plans.deleted_at))).limit(1);
     if (!rows.length) return c.json({ error: 'not_found' }, 404);
     return c.json(rows[0]);
   } catch (e) { console.error(e); return c.json({ error: 'Internal server error' }, 500); }
@@ -2453,8 +2544,15 @@ app.delete('/api/cycles/:id', async (c) => {
 
 app.get('/api/cycles/:cycleId/days', async (c) => {
   try {
+    const patient = await getOrCreatePatient();
     const cycleId = c.req.param('cycleId');
-    return c.json(await db.select().from(schema.cycle_days).where(eq(schema.cycle_days.cycle_id, cycleId)).orderBy(schema.cycle_days.day_of_cycle));
+    const cycleRows = await db.select().from(schema.cycles)
+      .where(and(eq(schema.cycles.id, cycleId), eq(schema.cycles.patient_id, patient.id), isNull(schema.cycles.deleted_at)))
+      .limit(1);
+    if (!cycleRows.length) return c.json({ error: 'not_found' }, 404);
+    return c.json(await db.select().from(schema.cycle_days)
+      .where(and(eq(schema.cycle_days.cycle_id, cycleId), eq(schema.cycle_days.patient_id, patient.id)))
+      .orderBy(schema.cycle_days.day_of_cycle));
   } catch (e) { console.error(e); return c.json({ error: 'Internal server error' }, 500); }
 });
 app.post('/api/cycle-days', async (c) => {
@@ -2591,7 +2689,7 @@ app.get('/api/experiments', async (c) => {
 });
 app.get('/api/experiments/:id', async (c) => {
   try {
-    const rows = await db.select().from(schema.experiments).where(eq(schema.experiments.id, c.req.param('id'))).limit(1);
+    const rows = await db.select().from(schema.experiments).where(and(eq(schema.experiments.id, c.req.param('id')), isNull(schema.experiments.deleted_at))).limit(1);
     if (!rows.length) return c.json({ error: 'not_found' }, 404);
     return c.json(rows[0]);
   } catch (e) { console.error(e); return c.json({ error: 'Internal server error' }, 500); }

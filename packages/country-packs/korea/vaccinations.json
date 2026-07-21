@@ -1,0 +1,142 @@
+{
+  "country": "KR",
+  "language": "ko",
+  "last_reviewed": "2024-01-01",
+  "prevention_category": "vaccination",
+  "organizations": [
+    {
+      "id": "kdca",
+      "name": "Korea Disease Control and Prevention Agency (질병관리청)",
+      "abbreviation": "KDCA",
+      "country": "KR",
+      "website": "https://www.kdca.go.kr",
+      "type": "government"
+    }
+  ],
+  "recommendations": [
+    {
+      "id": "kr-influenza",
+      "organization_id": "kdca",
+      "country": "KR",
+      "topic": "influenza_vaccination",
+      "subtopic": "annual_all_ages",
+      "module_tags": ["preventive_care", "infectious_disease", "vaccination"],
+      "title": {
+        "en": "Influenza (Flu) Vaccine — Annual",
+        "ko": "인플루엔자(독감) 예방접종 — 매년"
+      },
+      "recommendation_text": {
+        "en": "Annual influenza vaccination is recommended for all adults, ideally each autumn. Free under the national program for adults 65 and older.",
+        "ko": "모든 성인에게 매년(가을철 권장) 인플루엔자 예방접종을 권고합니다. 65세 이상은 국가예방접종 지원사업으로 무료 접종이 가능합니다."
+      },
+      "patient_facing_summary": {
+        "en": "Get a flu shot every year, ideally in autumn. It's free if you're 65 or older.",
+        "ko": "매년 가을에 독감 예방주사를 맞으세요. 65세 이상이면 무료입니다."
+      },
+      "age_min": 19,
+      "sex_relevance": ["male", "female"],
+      "interval_months": 12,
+      "source_url": "https://www.kdca.go.kr",
+      "version_date": "2024-01-01"
+    },
+    {
+      "id": "kr-hepatitis-b",
+      "organization_id": "kdca",
+      "country": "KR",
+      "topic": "hepatitis_b_vaccination",
+      "subtopic": "adult_series",
+      "module_tags": ["preventive_care", "infectious_disease", "vaccination", "liver_health"],
+      "title": {
+        "en": "Hepatitis B Vaccine — Unvaccinated Adults",
+        "ko": "B형 간염 예방접종 — 미접종 성인"
+      },
+      "recommendation_text": {
+        "en": "A 3-dose hepatitis B series is recommended for unvaccinated adults without immunity. Check surface antibody (anti-HBs) before vaccinating. Korea has historically high HBV prevalence; adults who grew up in Korea before universal childhood vaccination should verify their immunity status.",
+        "ko": "항체(anti-HBs)가 없는 미접종 성인에게 B형 간염 3회 접종을 권고합니다. 접종 전 표면항체 검사를 확인하세요. 어린이 국가예방접종 도입 이전에 성장한 성인은 면역 상태 확인이 특히 중요합니다."
+      },
+      "patient_facing_summary": {
+        "en": "If you've never had hepatitis B vaccination, get an antibody test and complete the 3-dose series if you're not immune.",
+        "ko": "B형 간염 접종을 받은 적이 없다면 항체 검사를 받고, 면역이 없으면 3회 접종을 완료하세요."
+      },
+      "age_min": 19,
+      "sex_relevance": ["male", "female"],
+      "risk_factors": { "requires_confirmation": ["no_hbv_immunity"] },
+      "source_url": "https://www.kdca.go.kr",
+      "version_date": "2024-01-01"
+    },
+    {
+      "id": "kr-tdap-td",
+      "organization_id": "kdca",
+      "country": "KR",
+      "topic": "tdap_vaccination",
+      "subtopic": "booster_q10y",
+      "module_tags": ["preventive_care", "infectious_disease", "vaccination"],
+      "title": {
+        "en": "Tdap / Td — One-time Tdap, Then Td Every 10 Years",
+        "ko": "파상풍·디프테리아·백일해(Tdap/Td) — Tdap 1회 후 10년마다 Td"
+      },
+      "recommendation_text": {
+        "en": "Adults should receive a one-time Tdap dose, followed by a Td booster every 10 years. Similar to the US CDC schedule.",
+        "ko": "성인은 Tdap 1회 접종 후 10년마다 Td 추가 접종을 권고합니다."
+      },
+      "patient_facing_summary": {
+        "en": "Get one Tdap shot as an adult, then a Td booster every 10 years.",
+        "ko": "성인이 되어 Tdap 1회를 맞고, 이후 10년마다 Td를 맞으세요."
+      },
+      "age_min": 11,
+      "sex_relevance": ["male", "female"],
+      "interval_months": 120,
+      "source_url": "https://www.kdca.go.kr",
+      "version_date": "2024-01-01"
+    },
+    {
+      "id": "kr-pneumococcal",
+      "organization_id": "kdca",
+      "country": "KR",
+      "topic": "pneumococcal_vaccination",
+      "subtopic": "65_plus_and_high_risk",
+      "module_tags": ["preventive_care", "infectious_disease", "vaccination"],
+      "title": {
+        "en": "Pneumococcal Vaccine — Adults 65+ and High-Risk",
+        "ko": "폐렴구균 예방접종 — 65세 이상 및 고위험군"
+      },
+      "recommendation_text": {
+        "en": "A free one-time PPSV23 dose is provided for adults 65 and older under the national program. Younger adults with high-risk conditions should also be vaccinated; higher-valent conjugate vaccines (PCV) are increasingly recommended.",
+        "ko": "65세 이상 성인은 국가예방접종 지원사업으로 PPSV23 1회 무료 접종이 가능합니다. 고위험 질환이 있는 젊은 성인도 접종을 권고하며, 단백결합백신(PCV) 사용이 점차 확대되고 있습니다."
+      },
+      "patient_facing_summary": {
+        "en": "If you're 65 or older (or younger with certain conditions), get the pneumonia vaccine — it's free at 65+.",
+        "ko": "65세 이상이거나 고위험 질환이 있다면 폐렴구균 백신을 맞으세요. 65세 이상은 무료입니다."
+      },
+      "age_min": 19,
+      "sex_relevance": ["male", "female"],
+      "source_url": "https://www.kdca.go.kr",
+      "version_date": "2024-01-01"
+    },
+    {
+      "id": "kr-hpv",
+      "organization_id": "kdca",
+      "country": "KR",
+      "topic": "hpv_vaccination",
+      "subtopic": "catch_up_through_26",
+      "module_tags": ["preventive_care", "infectious_disease", "vaccination", "cancer_prevention"],
+      "title": {
+        "en": "HPV Vaccine — Free at 12, Catch-up Through 26",
+        "ko": "사람유두종바이러스(HPV) 예방접종 — 12세 무료, 26세까지 따라잡기 접종"
+      },
+      "recommendation_text": {
+        "en": "HPV vaccination is provided free for girls at age 12 under the national program, with catch-up vaccination recommended through age 26 (2- or 3-dose series). Adults who received childhood care in Korea should verify their HPV vaccination status.",
+        "ko": "12세 여아는 국가예방접종으로 무료 접종이 가능하며, 26세까지 따라잡기 접종(2~3회)을 권고합니다. 어린 시절 접종 여부가 불확실하면 확인이 필요합니다."
+      },
+      "patient_facing_summary": {
+        "en": "HPV vaccine is recommended through age 26 if you weren't vaccinated at 12.",
+        "ko": "12세에 접종하지 않았다면 26세까지 HPV 백신 접종을 권장합니다."
+      },
+      "age_min": 11,
+      "age_max": 26,
+      "sex_relevance": ["male", "female"],
+      "source_url": "https://www.kdca.go.kr",
+      "version_date": "2024-01-01"
+    }
+  ]
+}
